@@ -1,4 +1,4 @@
-package com.example.CGI_Restaurant.services;
+package com.example.CGI_Restaurant.services.auth.impl;
 
 import org.springframework.security.core.userdetails.UserDetails;
 

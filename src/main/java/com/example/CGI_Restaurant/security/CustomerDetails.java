@@ -1,6 +1,6 @@
 package com.example.CGI_Restaurant.security;
 
-import com.example.CGI_Restaurant.domain.User;
+import com.example.CGI_Restaurant.domain.entities.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;

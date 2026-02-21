@@ -1,6 +1,6 @@
 package com.example.CGI_Restaurant.security;
 
-import com.example.CGI_Restaurant.domain.User;
+import com.example.CGI_Restaurant.domain.entities.User;
 import com.example.CGI_Restaurant.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

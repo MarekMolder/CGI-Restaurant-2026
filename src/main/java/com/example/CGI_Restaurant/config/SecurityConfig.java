@@ -1,11 +1,11 @@
 package com.example.CGI_Restaurant.config;
 
-import com.example.CGI_Restaurant.domain.User;
-import com.example.CGI_Restaurant.domain.UserRoleEnum;
+import com.example.CGI_Restaurant.domain.entities.User;
+import com.example.CGI_Restaurant.domain.entities.UserRoleEnum;
 import com.example.CGI_Restaurant.repositories.UserRepository;
 import com.example.CGI_Restaurant.security.CustomerDetailsService;
 import com.example.CGI_Restaurant.security.JwtAuthenticationFilter;
-import com.example.CGI_Restaurant.services.AuthenticationService;
+import com.example.CGI_Restaurant.services.auth.impl.AuthenticationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
