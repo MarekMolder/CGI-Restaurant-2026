@@ -1,6 +1,6 @@
 package com.example.CGI_Restaurant.repositories;
 
-import com.example.CGI_Restaurant.domain.User;
+import com.example.CGI_Restaurant.domain.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

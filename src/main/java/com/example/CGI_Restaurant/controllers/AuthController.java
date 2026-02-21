@@ -1,9 +1,9 @@
 package com.example.CGI_Restaurant.controllers;
 
-import com.example.CGI_Restaurant.domain.dto.AuthResponse;
-import com.example.CGI_Restaurant.domain.dto.LoginRequest;
-import com.example.CGI_Restaurant.domain.dto.RegisterRequest;
-import com.example.CGI_Restaurant.services.AuthenticationService;
+import com.example.CGI_Restaurant.domain.dtos.AuthResponse;
+import com.example.CGI_Restaurant.domain.dtos.LoginRequest;
+import com.example.CGI_Restaurant.domain.dtos.RegisterRequest;
+import com.example.CGI_Restaurant.services.auth.impl.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

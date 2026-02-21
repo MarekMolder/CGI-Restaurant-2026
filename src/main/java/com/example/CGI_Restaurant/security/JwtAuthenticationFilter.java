@@ -1,6 +1,6 @@
 package com.example.CGI_Restaurant.security;
 
-import com.example.CGI_Restaurant.services.AuthenticationService;
+import com.example.CGI_Restaurant.services.auth.impl.AuthenticationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
