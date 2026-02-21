@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 @Entity
 @jakarta.persistence.Table(name = "seating_plans")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -46,10 +48,10 @@ public class SeatingPlan {
     @Column(name = "version", nullable = false)
     private int version;
 
-    @OneToMany(mappedBy = "seating_plan")
-    private List<Table> tables = new ArrayList<>();
+    @OneToMany(mappedBy = "seatingPlan")
+    private List<TableEntity> tableEntities = new ArrayList<>();
 
-    @OneToMany(mappedBy = "seating_plan")
+    @OneToMany(mappedBy = "seatingPlan")
     private List<Zone> zones = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

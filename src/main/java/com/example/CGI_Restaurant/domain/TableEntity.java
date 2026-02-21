@@ -1,10 +1,10 @@
 package com.example.CGI_Restaurant.domain;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,13 +12,14 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@jakarta.persistence.Table(name = "tables")
+@Table(name = "tables")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Table {
+public class TableEntity {
 
     @Id
     @Column(name = "id", updatable = false, nullable = false)
@@ -56,7 +57,7 @@ public class Table {
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    @OneToMany(mappedBy = "table")
+    @OneToMany(mappedBy = "tableEntity")
     private List<BookingTable> bookingTables = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
