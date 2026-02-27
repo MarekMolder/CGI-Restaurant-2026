@@ -1,9 +1,15 @@
 package com.example.CGI_Restaurant.mappers;
 
-import com.example.CGI_Restaurant.domain.dtos.requests.CreateBookingPreferenceRequestDto;
-import com.example.CGI_Restaurant.domain.dtos.responses.CreateBookingPreferenceResponseDto;
+import com.example.CGI_Restaurant.domain.dtos.getResponses.GetBookingPreferenceDetailsResponseDto;
+import com.example.CGI_Restaurant.domain.dtos.listResponses.ListBookingPreferenceResponseDto;
+import com.example.CGI_Restaurant.domain.dtos.createRequests.CreateBookingPreferenceRequestDto;
+import com.example.CGI_Restaurant.domain.dtos.createResponses.CreateBookingPreferenceResponseDto;
+import com.example.CGI_Restaurant.domain.dtos.updateRequests.UpdateBookingPreferenceRequestDto;
+import com.example.CGI_Restaurant.domain.dtos.updateResponses.UpdateBookingPreferenceResponseDto;
 import com.example.CGI_Restaurant.domain.entities.BookingPreference;
-import com.example.CGI_Restaurant.domain.requests.CreateBookingPreferenceRequest;
+import com.example.CGI_Restaurant.domain.createRequests.CreateBookingPreferenceRequest;
+import com.example.CGI_Restaurant.domain.updateRequests.UpdateBookingPreferenceRequest;
+import com.example.CGI_Restaurant.domain.updateRequests.UpdateBookingRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -12,4 +18,12 @@ public interface BookingPreferenceMapper {
     CreateBookingPreferenceRequest fromDto(CreateBookingPreferenceRequestDto dto);
 
     CreateBookingPreferenceResponseDto toDto(BookingPreference bookingPreference);
+
+    ListBookingPreferenceResponseDto toListBookingPreferenceResponseDto(BookingPreference bookingPreference);
+
+    GetBookingPreferenceDetailsResponseDto toGetBookingPreferenceDetailsResponseDto(BookingPreference bookingPreference);
+
+    UpdateBookingPreferenceRequest fromDto(UpdateBookingPreferenceRequestDto dto);
+
+    UpdateBookingPreferenceResponseDto toUpdateBookingPreferenceResponseDto(BookingPreference bookingPreference);
 }

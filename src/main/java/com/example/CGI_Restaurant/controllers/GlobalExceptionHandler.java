@@ -1,18 +1,16 @@
 package com.example.CGI_Restaurant.controllers;
 
 import com.example.CGI_Restaurant.domain.dtos.ApiErrorResponse;
-import com.example.CGI_Restaurant.exceptions.UserNotFoundException;
+import com.example.CGI_Restaurant.exceptions.notFoundExceptions.*;
+import com.example.CGI_Restaurant.exceptions.updateException.*;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
@@ -108,5 +106,147 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(BookingNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleBookingNotFoundException(BookingNotFoundException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage() != null ? ex.getMessage() : "Booking not found")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 
+    @ExceptionHandler(BookingPreferenceNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleBookingPreferenceNotFoundException(BookingPreferenceNotFoundException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage() != null ? ex.getMessage() : "Booking preference not found")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BookingTableNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleBookingTableNotFoundException(BookingTableNotFoundException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage() != null ? ex.getMessage() : "Booking table not found")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(FeatureNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleFeatureNotFoundException(FeatureNotFoundException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage() != null ? ex.getMessage() : "Feature not found")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RestaurantNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleRestaurantNotFoundException(RestaurantNotFoundException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage() != null ? ex.getMessage() : "Restaurant not found")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(SeatingPlanNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleSeatingPlanNotFoundException(SeatingPlanNotFoundException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage() != null ? ex.getMessage() : "Seating plan not found")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TableEntityNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleTableEntityNotFoundException(TableEntityNotFoundException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage() != null ? ex.getMessage() : "Table entity not found")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ZoneNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleZoneNotFoundException(ZoneNotFoundException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage() != null ? ex.getMessage() : "Zone not found")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BookingUpdateException.class)
+    public ResponseEntity<ApiErrorResponse> handleBookingUpdateException(BookingUpdateException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Unable to update booking")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BookingPreferenceUpdateException.class)
+    public ResponseEntity<ApiErrorResponse> handleBookingPreferenceUpdateException(BookingPreferenceUpdateException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Unable to update booking preference")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BookingTableUpdateException.class)
+    public ResponseEntity<ApiErrorResponse> handleBookingTableUpdateException(BookingTableUpdateException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Unable to update booking table")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FeatureUpdateException.class)
+    public ResponseEntity<ApiErrorResponse> handleFeatureUpdateException(FeatureUpdateException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Unable to update feature")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RestaurantUpdateException.class)
+    public ResponseEntity<ApiErrorResponse> handleRestaurantUpdateException(RestaurantUpdateException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Unable to update restaurant")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(SeatingPlanUpdateException.class)
+    public ResponseEntity<ApiErrorResponse> handleSeatingPlanUpdateException(SeatingPlanUpdateException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Unable to update seating plan")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TableEntityUpdateException.class)
+    public ResponseEntity<ApiErrorResponse> handleTableEntityUpdateException(TableEntityUpdateException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Unable to update table entity")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ZoneUpdateException.class)
+    public ResponseEntity<ApiErrorResponse> handleZoneUpdateException(ZoneUpdateException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Unable to update zone")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 }
