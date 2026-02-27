@@ -75,7 +75,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Optional<Booking> getBookingForCustomer(UUID id, UUID customerId) {
-        return bookingRepository.findByIdAndCustomerId(id, customerId);
+        return bookingRepository.findByIdAndUserId(id, customerId);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         Booking existingBooking = bookingRepository
-                .findByIdAndCustomerId(id, customerId)
+                .findByIdAndUserId(id, customerId)
                 .orElseThrow(() -> new BookingNotFoundException(
                         String.format("Booking with ID '%s' does not exist", id))
                 );
@@ -205,7 +205,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public void deleteBookingForCustomer(UUID id, UUID customerId) {
-        Booking booking = bookingRepository.findByIdAndCustomerId(id, customerId)
+        Booking booking = bookingRepository.findByIdAndUserId(id, customerId)
                 .orElseThrow(() -> new BookingNotFoundException(
                         String.format("Booking with ID '%s' does not exist or does not belong to you", id)));
         bookingRepository.delete(booking);

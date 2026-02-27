@@ -12,7 +12,7 @@ import com.example.CGI_Restaurant.domain.updateRequests.UpdateTableEntityRequest
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = BookingTableMapper.class)
 public interface TableEntityMapper {
 
     CreateTableEntityRequest fromDto(CreateTableEntityRequestDto dto);
