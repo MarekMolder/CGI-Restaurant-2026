@@ -12,5 +12,5 @@ import java.util.UUID;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
     Page<Booking> findByUserId(UUID customerId, Pageable pageable);
-    Optional<Booking> findByIdAndCustomerId(UUID id, UUID customerId);
+    Optional<Booking> findByIdAndUserId(UUID id, UUID userId);
 }

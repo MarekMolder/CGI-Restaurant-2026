@@ -12,7 +12,7 @@ import com.example.CGI_Restaurant.domain.updateRequests.UpdateRestaurantRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = SeatingPlanMapper.class)
 public interface RestaurantMapper {
     CreateRestaurantRequest fromDto(CreateRestaurantRequestDto dto);
 
