@@ -1,6 +1,7 @@
 package com.example.CGI_Restaurant.security;
 
 import com.example.CGI_Restaurant.domain.entities.User;
+import com.example.CGI_Restaurant.domain.entities.UserRoleEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
@@ -32,6 +33,10 @@ public class CustomerDetails implements UserDetails {
     @Override
     public String getUsername() {
         return user.getEmail();
+    }
+
+    public UserRoleEnum getRole() {
+        return user.getRole();
     }
 
     @Override

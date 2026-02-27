@@ -1,5 +1,6 @@
 package com.example.CGI_Restaurant.domain.dtos;
 
+import com.example.CGI_Restaurant.domain.entities.UserRoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,4 +20,5 @@ public class UserInfoDto {
     private UUID id;
     private String name;
     private String email;
+    private UserRoleEnum role;
 }
