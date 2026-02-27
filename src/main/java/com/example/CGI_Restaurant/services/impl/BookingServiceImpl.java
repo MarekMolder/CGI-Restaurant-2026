@@ -3,7 +3,9 @@ package com.example.CGI_Restaurant.services.impl;
 import com.example.CGI_Restaurant.domain.entities.Booking;
 import com.example.CGI_Restaurant.domain.entities.BookingPreference;
 import com.example.CGI_Restaurant.domain.entities.BookingTable;
+import com.example.CGI_Restaurant.domain.createRequests.CreateBookingPreferenceRequest;
 import com.example.CGI_Restaurant.domain.createRequests.CreateBookingRequest;
+import com.example.CGI_Restaurant.domain.createRequests.CreateBookingTableRequest;
 import com.example.CGI_Restaurant.domain.updateRequests.UpdateBookingPreferenceRequest;
 import com.example.CGI_Restaurant.domain.updateRequests.UpdateBookingRequest;
 import com.example.CGI_Restaurant.domain.updateRequests.UpdateBookingTableRequest;
@@ -11,8 +13,10 @@ import com.example.CGI_Restaurant.exceptions.notFoundExceptions.BookingNotFoundE
 import com.example.CGI_Restaurant.exceptions.notFoundExceptions.BookingPreferenceNotFoundException;
 import com.example.CGI_Restaurant.exceptions.updateException.BookingPreferenceUpdateException;
 import com.example.CGI_Restaurant.exceptions.updateException.BookingUpdateException;
+import jakarta.persistence.EntityManager;
 import com.example.CGI_Restaurant.repositories.BookingRepository;
-import com.example.CGI_Restaurant.repositories.UserRepository;
+import com.example.CGI_Restaurant.services.BookingPreferenceService;
+import com.example.CGI_Restaurant.services.BookingTableService;
 import com.example.CGI_Restaurant.services.BookingService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,39 +32,44 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
-    private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final BookingPreferenceService bookingPreferenceService;
+    private final BookingTableService bookingTableService;
+    private final EntityManager entityManager;
 
     @Override
-    public Booking createBooking(CreateBookingRequest booking) {
+    @Transactional
+    public Booking createBooking(CreateBookingRequest request) {
+        Booking booking = new Booking();
+        booking.setGuestName(request.getUser().getName());
+        booking.setGuestEmail(request.getUser().getEmail());
+        booking.setStartAt(request.getStartAt());
+        booking.setEndAt(request.getEndAt());
+        booking.setPartySize(request.getPartySize());
+        booking.setStatus(request.getStatus());
+        booking.setQrToken(request.getQrToken());
+        booking.setSpecialRequests(request.getSpecialRequests());
+        booking.setUser(request.getUser());
+        Booking saved = bookingRepository.save(booking);
 
-        List<BookingPreference> bookingPreferencesToCreate = booking.getBookingPreferences().stream().map(
-                preference -> {
-                    BookingPreference bookingPreferenceToCreate = new BookingPreference();
-                    bookingPreferenceToCreate.setPriority(preference.getPriority());
-                    return bookingPreferenceToCreate;
-                }).toList();
-
-        List<BookingTable> bookingTablesToCreate = booking.getBookingTableRequests().stream().map(
-                bookingTable -> {
-                    BookingTable bookingTableToCreate = new BookingTable();
-                    return bookingTableToCreate;
-                }).toList();
-
-        Booking bookingToCreate = new Booking();
-        bookingToCreate.setGuestName(booking.getUser().getName());
-        bookingToCreate.setGuestEmail(booking.getUser().getEmail());
-        bookingToCreate.setStartAt(booking.getStartAt());
-        bookingToCreate.setEndAt(booking.getEndAt());
-        bookingToCreate.setPartySize(booking.getPartySize());
-        bookingToCreate.setStatus(booking.getStatus());
-        bookingToCreate.setQrToken(booking.getQrToken());
-        bookingToCreate.setSpecialRequests(booking.getSpecialRequests());
-        bookingToCreate.setUser(booking.getUser());
-        bookingToCreate.setBookingPreferences(bookingPreferencesToCreate);
-        bookingToCreate.setBookingTables(bookingTablesToCreate);
-
-        return bookingRepository.save(bookingToCreate);
+        var preferences = request.getBookingPreferences() != null ? request.getBookingPreferences() : List.<CreateBookingPreferenceRequest>of();
+        for (var pref : preferences) {
+            var prefRequest = new CreateBookingPreferenceRequest();
+            prefRequest.setBookingId(saved.getId());
+            prefRequest.setFeatureId(pref.getFeatureId());
+            prefRequest.setPriority(pref.getPriority());
+            bookingPreferenceService.create(prefRequest);
+        }
+        var tables = request.getBookingTables() != null ? request.getBookingTables() : List.<CreateBookingTableRequest>of();
+        for (var tbl : tables) {
+            var tableRequest = new CreateBookingTableRequest();
+            tableRequest.setBookingId(saved.getId());
+            tableRequest.setTableEntityId(tbl.getTableEntityId());
+            bookingTableService.create(tableRequest);
+        }
+        entityManager.flush();
+        entityManager.refresh(saved);
+        return saved;
     }
 
     @Override

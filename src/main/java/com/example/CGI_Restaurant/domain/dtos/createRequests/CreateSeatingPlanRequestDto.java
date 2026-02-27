@@ -3,7 +3,6 @@ package com.example.CGI_Restaurant.domain.dtos.createRequests;
 import com.example.CGI_Restaurant.domain.entities.SeatingPlanTypeEnum;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -42,11 +41,9 @@ public class CreateSeatingPlanRequestDto {
     @jakarta.validation.constraints.Min(value = 0, message = "Version must be 0 or greater")
     private Integer version;
 
-    @NotEmpty(message = "At least one table is required")
     @Valid
     private List<CreateTableEntityRequestDto> tableEntities = new ArrayList<>();
 
-    @NotEmpty(message = "At least one zone is required")
     @Valid
     private List<CreateZoneRequestDto> zones = new ArrayList<>();
 }

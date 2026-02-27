@@ -3,7 +3,6 @@ package com.example.CGI_Restaurant.domain.dtos.createRequests;
 import com.example.CGI_Restaurant.domain.entities.ZoneTypeEnum;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -29,7 +28,6 @@ public class CreateZoneRequestDto {
     @Size(max = 50, message = "Color must not exceed 50 characters")
     private String color;
 
-    @NotEmpty(message = "At least one table is required")
     @Valid
     private List<CreateTableEntityRequestDto> tableEntities = new ArrayList<>();
 }

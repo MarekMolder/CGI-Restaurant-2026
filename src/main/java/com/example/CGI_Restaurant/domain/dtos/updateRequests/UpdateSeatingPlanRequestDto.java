@@ -44,11 +44,9 @@ public class UpdateSeatingPlanRequestDto {
     @jakarta.validation.constraints.Min(value = 0, message = "Version must be 0 or greater")
     private Integer version;
 
-    @NotEmpty(message = "At least one table is required")
     @Valid
     private List<UpdateTableEntityRequestDto> tableEntities = new ArrayList<>();
 
-    @NotEmpty(message = "At least one zone is required")
     @Valid
     private List<UpdateZoneRequestDto> zones = new ArrayList<>();
 }

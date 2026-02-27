@@ -25,5 +25,5 @@ public class CreateBookingRequest {
     private String specialRequests;
     private User user;
     private List<CreateBookingPreferenceRequest> bookingPreferences = new ArrayList<>();
-    private List<CreateBookingTableRequest> bookingTableRequests = new ArrayList<>();
+    private List<CreateBookingTableRequest> bookingTables = new ArrayList<>();
 }
