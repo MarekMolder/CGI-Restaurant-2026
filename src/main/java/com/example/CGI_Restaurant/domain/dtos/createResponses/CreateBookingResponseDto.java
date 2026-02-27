@@ -26,7 +26,7 @@ public class CreateBookingResponseDto {
     private String specialRequests;
     private UserInfoDto user;
     private List<CreateBookingPreferenceResponseDto> bookingPreferences = new ArrayList<>();
-    private List<CreateBookingTableResponseDto> bookingTableRequests = new ArrayList<>();
+    private List<CreateBookingTableResponseDto> bookingTables = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

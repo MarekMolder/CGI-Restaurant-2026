@@ -40,7 +40,6 @@ public class UpdateRestaurantRequestDto {
     @Size(max = 500, message = "Address must not exceed 500 characters")
     private String address;
 
-    @NotEmpty(message = "At least one seating plan is required")
     @Valid
     private List<UpdateSeatingPlanRequestDto> seatingPlans = new ArrayList<>();
 }

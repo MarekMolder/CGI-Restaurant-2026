@@ -1,6 +1,6 @@
 package com.example.CGI_Restaurant.domain.updateRequests;
 
-import com.example.CGI_Restaurant.domain.createRequests.CreateTableEntityRequest;
+import com.example.CGI_Restaurant.domain.updateRequests.UpdateTableEntityRequest;
 import com.example.CGI_Restaurant.domain.entities.ZoneTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
