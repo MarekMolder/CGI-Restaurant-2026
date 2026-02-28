@@ -4,12 +4,14 @@ import com.example.CGI_Restaurant.domain.dtos.listResponses.TableAvailabilityIte
 import com.example.CGI_Restaurant.domain.entities.TableEntity;
 import com.example.CGI_Restaurant.domain.createRequests.CreateTableEntityRequest;
 import com.example.CGI_Restaurant.domain.updateRequests.UpdateTableEntityRequest;
+import com.example.CGI_Restaurant.exceptions.RestaurantBookingException;
 import com.example.CGI_Restaurant.exceptions.notFoundExceptions.TableEntityNotFoundException;
 import com.example.CGI_Restaurant.exceptions.updateException.TableEntityUpdateException;
 import com.example.CGI_Restaurant.mappers.TableEntityMapper;
 import com.example.CGI_Restaurant.repositories.BookingTableRepository;
 import com.example.CGI_Restaurant.repositories.TableEntityRepository;
 import com.example.CGI_Restaurant.repositories.ZoneRepository;
+import com.example.CGI_Restaurant.services.RestaurantHoursService;
 import com.example.CGI_Restaurant.services.TableEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,23 +22,26 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 @Service
 @RequiredArgsConstructor
 public class TableEntityServiceImpl implements TableEntityService {
 
-    /** Maksimaalne lubatud tühjade kohtade arv lauas (nt 2 → 8-kohalist lauda ei pakuta 2 inimesele). */
     public static final int MAX_EMPTY_SEATS = 2;
 
-    /** Boonus soovituse skoorile iga sobitunud eelistuse (feature) eest. */
     private static final int FEATURE_MATCH_BONUS = 20;
 
     private final TableEntityRepository tableEntityRepository;
     private final BookingTableRepository bookingTableRepository;
     private final ZoneRepository zoneRepository;
     private final TableEntityMapper tableEntityMapper;
+    private final RestaurantHoursService restaurantHoursService;
 
     @Override
+    @Transactional
     public TableEntity create(CreateTableEntityRequest request) {
         TableEntity entity = new TableEntity();
         entity.setLabel(request.getLabel());
@@ -49,7 +54,9 @@ public class TableEntityServiceImpl implements TableEntityService {
         entity.setHeight(request.getHeight());
         entity.setRotationDegree(request.getRotationDegree());
         entity.setActive(request.isActive());
-        return tableEntityRepository.save(entity);
+        TableEntity saved = tableEntityRepository.save(entity);
+        syncAdjacentTables(saved, request.getAdjacentTableIds() != null ? request.getAdjacentTableIds() : List.of());
+        return saved;
     }
 
     @Override
@@ -80,7 +87,34 @@ public class TableEntityServiceImpl implements TableEntityService {
         entity.setHeight(request.getHeight());
         entity.setRotationDegree(request.getRotationDegree());
         entity.setActive(request.isActive());
+        syncAdjacentTables(entity, request.getAdjacentTableIds() != null ? request.getAdjacentTableIds() : List.of());
         return tableEntityRepository.save(entity);
+    }
+
+    private void syncAdjacentTables(TableEntity table, List<UUID> adjacentIds) {
+        for (TableEntity oldAdj : new ArrayList<>(table.getAdjacentTables())) {
+            oldAdj.getAdjacentTables().remove(table);
+            tableEntityRepository.save(oldAdj);
+        }
+        table.getAdjacentTables().clear();
+        if (adjacentIds == null || adjacentIds.isEmpty()) {
+            return;
+        }
+        List<TableEntity> adjTables = adjacentIds.stream()
+                .distinct()
+                .filter(id -> !id.equals(table.getId()))
+                .map(tableEntityRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList();
+        table.getAdjacentTables().addAll(adjTables);
+        tableEntityRepository.save(table);
+        for (TableEntity adj : adjTables) {
+            if (!adj.getAdjacentTables().contains(table)) {
+                adj.getAdjacentTables().add(table);
+                tableEntityRepository.save(adj);
+            }
+        }
     }
 
     @Override
@@ -104,10 +138,18 @@ public class TableEntityServiceImpl implements TableEntityService {
         if (seatingPlanId == null && zoneId == null) {
             throw new IllegalArgumentException("Either seatingPlanId or zoneId must be provided");
         }
-        Page<TableEntity> tablePage = zoneId != null
-                ? tableEntityRepository.findByZoneIdAndActiveTrue(zoneId, Pageable.unpaged())
-                : tableEntityRepository.findBySeatingPlanIdAndActiveTrue(seatingPlanId, Pageable.unpaged());
-        List<TableEntity> tables = tablePage.getContent().stream()
+        if (!restaurantHoursService.isWithinOpeningHours(startAt, endAt)) {
+            return List.of();
+        }
+
+        List<TableEntity> allTables = zoneId != null
+                ? tableEntityRepository.findByZoneIdAndActiveTrueWithAdjacent(zoneId)
+                : tableEntityRepository.findBySeatingPlanIdAndActiveTrueWithAdjacent(seatingPlanId);
+
+        Set<UUID> bookedTableIds = bookingTableRepository.findTableEntityIdsBookedBetween(startAt, endAt).stream()
+                .collect(Collectors.toSet());
+
+        List<TableEntity> tables = allTables.stream()
                 .filter(t -> t.getCapacity() >= partySize && t.getMinPartySize() <= partySize)
                 .filter(t -> (t.getCapacity() - partySize) <= MAX_EMPTY_SEATS)
                 .toList();
@@ -115,8 +157,8 @@ public class TableEntityServiceImpl implements TableEntityService {
         Set<UUID> preferredIds = preferredFeatureIds != null && !preferredFeatureIds.isEmpty()
                 ? new HashSet<>(preferredFeatureIds) : Set.of();
         Map<UUID, Set<UUID>> zoneIdToFeatureIds = new HashMap<>();
-        if (!preferredIds.isEmpty() && !tables.isEmpty()) {
-            List<UUID> zoneIds = tables.stream()
+        if (!preferredIds.isEmpty() && !allTables.isEmpty()) {
+            List<UUID> zoneIds = allTables.stream()
                     .map(t -> t.getZone() != null ? t.getZone().getId() : null)
                     .filter(Objects::nonNull)
                     .distinct()
@@ -129,10 +171,7 @@ public class TableEntityServiceImpl implements TableEntityService {
             }
         }
 
-        Set<UUID> bookedTableIds = bookingTableRepository.findTableEntityIdsBookedBetween(startAt, endAt).stream()
-                .collect(Collectors.toSet());
-
-        return tables.stream()
+        List<TableAvailabilityItemDto> singleDtos = tables.stream()
                 .map(t -> {
                     boolean available = !bookedTableIds.contains(t.getId());
                     Integer score = null;
@@ -150,6 +189,51 @@ public class TableEntityServiceImpl implements TableEntityService {
                     }
                     return tableEntityMapper.toTableAvailabilityItemDto(t, available, score);
                 })
+                .toList();
+
+        List<TableAvailabilityItemDto> combinedDtos = new ArrayList<>();
+        for (TableEntity t : allTables) {
+            if (t.getAdjacentTables() == null) continue;
+            for (TableEntity adj : t.getAdjacentTables()) {
+                if (adj.getId().compareTo(t.getId()) <= 0) continue;
+                boolean bothAvailable = !bookedTableIds.contains(t.getId()) && !bookedTableIds.contains(adj.getId());
+                int sumCap = t.getCapacity() + adj.getCapacity();
+                if (!bothAvailable || sumCap < partySize || (sumCap - partySize) > MAX_EMPTY_SEATS) continue;
+                if (t.getMinPartySize() > partySize || adj.getMinPartySize() > partySize) continue;
+
+                int baseScore = 100 - Math.max(0, sumCap - partySize);
+                int featureBonus = 0;
+                if (t.getZone() != null && zoneIdToFeatureIds.containsKey(t.getZone().getId())) {
+                    for (UUID fid : preferredIds) {
+                        if (zoneIdToFeatureIds.get(t.getZone().getId()).contains(fid)) {
+                            featureBonus += FEATURE_MATCH_BONUS;
+                        }
+                    }
+                }
+                Integer score = baseScore + featureBonus;
+                TableAvailabilityItemDto dto = new TableAvailabilityItemDto();
+                dto.setId(t.getId());
+                dto.setTableIds(List.of(t.getId(), adj.getId()));
+                dto.setCombined(true);
+                dto.setLabel(t.getLabel() + " + " + adj.getLabel());
+                dto.setCapacity(sumCap);
+                dto.setMinPartySize(Math.min(t.getMinPartySize(), adj.getMinPartySize()));
+                dto.setShape(t.getShape());
+                dto.setX(t.getX());
+                dto.setY(t.getY());
+                dto.setWidth(t.getWidth());
+                dto.setHeight(t.getHeight());
+                dto.setRotationDegree(t.getRotationDegree());
+                dto.setZoneId(t.getZone() != null ? t.getZone().getId() : null);
+                dto.setZoneName(t.getZone() != null ? t.getZone().getName() : null);
+                dto.setZoneType(t.getZone() != null ? t.getZone().getType() : null);
+                dto.setAvailable(true);
+                dto.setRecommendationScore(score);
+                combinedDtos.add(dto);
+            }
+        }
+
+        return Stream.concat(singleDtos.stream(), combinedDtos.stream())
                 .sorted((a, b) -> {
                     if (a.isAvailable() != b.isAvailable()) return a.isAvailable() ? -1 : 1;
                     Integer sa = a.getRecommendationScore() != null ? a.getRecommendationScore() : 0;
@@ -157,5 +241,38 @@ public class TableEntityServiceImpl implements TableEntityService {
                     return Integer.compare(sb, sa);
                 })
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void validateTablesAdjacent(Set<UUID> tableIds) {
+        if (tableIds == null || tableIds.size() <= 1) return;
+        List<TableEntity> tables = tableEntityRepository.findByIdInWithAdjacent(tableIds.stream().toList());
+        if (tables.size() != tableIds.size()) {
+            throw new RestaurantBookingException("Cant find table.");
+        }
+        Map<UUID, Set<UUID>> adjacentIdsByTable = new HashMap<>();
+        for (TableEntity t : tables) {
+            Set<UUID> adjIds = t.getAdjacentTables() != null
+                    ? t.getAdjacentTables().stream().map(TableEntity::getId).collect(Collectors.toSet())
+                    : Set.of();
+            adjacentIdsByTable.put(t.getId(), adjIds);
+        }
+        Set<UUID> remaining = new HashSet<>(tableIds);
+        Deque<UUID> queue = new ArrayDeque<>();
+        queue.add(remaining.iterator().next());
+        while (!queue.isEmpty()) {
+            UUID u = queue.poll();
+            if (!remaining.remove(u)) continue;
+            Set<UUID> adj = adjacentIdsByTable.get(u);
+            if (adj != null) {
+                for (UUID v : adj) {
+                    if (tableIds.contains(v)) queue.add(v);
+                }
+            }
+        }
+        if (!remaining.isEmpty()) {
+            throw new RestaurantBookingException("Chosen tables must be nearby to each other.");
+        }
     }
 }

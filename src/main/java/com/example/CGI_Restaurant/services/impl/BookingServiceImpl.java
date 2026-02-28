@@ -17,6 +17,8 @@ import com.example.CGI_Restaurant.exceptions.updateException.BookingUpdateExcept
 import com.example.CGI_Restaurant.repositories.BookingTableRepository;
 import com.example.CGI_Restaurant.repositories.UserRepository;
 import com.example.CGI_Restaurant.services.EmailService;
+import com.example.CGI_Restaurant.services.RestaurantHoursService;
+import com.example.CGI_Restaurant.services.TableEntityService;
 import com.example.CGI_Restaurant.services.QrCodeService;
 import jakarta.persistence.EntityManager;
 import com.example.CGI_Restaurant.repositories.BookingRepository;
@@ -29,6 +31,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -45,20 +48,33 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final QrCodeService qrCodeService;
     private final EmailService emailService;
+    private final RestaurantHoursService restaurantHoursService;
+    private final TableEntityService tableEntityService;
 
     @Override
     @Transactional
     public Booking createBooking(CreateBookingRequest request) {
+        if (!restaurantHoursService.isWithinOpeningHours(request.getStartAt(), request.getEndAt())) {
+            throw new RestaurantBookingException("Booking time must fall within the restaurant’s opening hours..");
+        }
+        int durationHours = restaurantHoursService.getBookingDurationHours();
+        if (Duration.between(request.getStartAt(), request.getEndAt()).toHours() != durationHours) {
+            throw new RestaurantBookingException("The booking duration must be exactly " + durationHours + " hours.");
+        }
+
         var tableRequests = request.getBookingTables() != null ? request.getBookingTables() : List.<CreateBookingTableRequest>of();
         if (!tableRequests.isEmpty()) {
             Set<UUID> requestedTableIds = tableRequests.stream()
                     .map(CreateBookingTableRequest::getTableEntityId)
                     .collect(Collectors.toSet());
+            if (requestedTableIds.size() > 1) {
+                tableEntityService.validateTablesAdjacent(requestedTableIds);
+            }
             List<UUID> bookedInRange = bookingTableRepository.findTableEntityIdsBookedBetween(
                     request.getStartAt(), request.getEndAt());
             boolean anyTaken = requestedTableIds.stream().anyMatch(bookedInRange::contains);
             if (anyTaken) {
-                throw new RestaurantBookingException("Üks või mitu valitud lauda on antud ajahetkel juba broneeritud.");
+                throw new RestaurantBookingException("One or more of the selected tables are already booked at the selected time.");
             }
         }
 

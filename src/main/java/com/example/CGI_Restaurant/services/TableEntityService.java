@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public interface TableEntityService {
@@ -24,4 +25,6 @@ public interface TableEntityService {
     List<TableAvailabilityItemDto> findTablesWithAvailability(UUID seatingPlanId, UUID zoneId, int partySize,
                                                              LocalDateTime startAt, LocalDateTime endAt,
                                                              List<UUID> preferredFeatureIds);
+
+    void validateTablesAdjacent(Set<UUID> tableIds);
 }

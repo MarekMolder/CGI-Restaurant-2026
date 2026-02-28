@@ -1,6 +1,5 @@
 package com.example.CGI_Restaurant.domain.updateRequests;
 
-import com.example.CGI_Restaurant.domain.createRequests.CreateBookingTableRequest;
 import com.example.CGI_Restaurant.domain.entities.TableShapeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 
 @Data
 @AllArgsConstructor
@@ -26,5 +24,5 @@ public class UpdateTableEntityRequest {
     private double height;
     private int rotationDegree;
     private boolean active;
-    private List<UpdateBookingTableRequest> bookingTables = new ArrayList<>();
+    private List<UUID> adjacentTableIds = new ArrayList<>();
 }

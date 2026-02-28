@@ -7,7 +7,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -65,6 +67,12 @@ public class TableEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seating_plan_id")
     private SeatingPlan seatingPlan;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "table_adjacency",
+            joinColumns = @JoinColumn(name = "table_id"),
+            inverseJoinColumns = @JoinColumn(name = "adjacent_table_id"))
+    private Set<TableEntity> adjacentTables = new HashSet<>();
 
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false)

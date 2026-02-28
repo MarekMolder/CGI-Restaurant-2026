@@ -1,6 +1,5 @@
 package com.example.CGI_Restaurant.domain.dtos.updateRequests;
 
-import com.example.CGI_Restaurant.domain.dtos.createRequests.CreateBookingTableRequestDto;
 import com.example.CGI_Restaurant.domain.entities.TableShapeEnum;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -59,6 +58,5 @@ public class UpdateTableEntityRequestDto {
 
     private boolean active;
 
-    @Valid
-    private List<UpdateBookingTableRequestDto> bookingTables = new ArrayList<>();
+    private List<UUID> adjacentTableIds = new ArrayList<>();
 }
