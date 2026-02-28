@@ -13,6 +13,7 @@ import com.example.CGI_Restaurant.domain.updateRequests.UpdateBookingRequest;
 import com.example.CGI_Restaurant.mappers.BookingMapper;
 import com.example.CGI_Restaurant.security.CustomerDetails;
 import com.example.CGI_Restaurant.services.BookingService;
+import io.jsonwebtoken.Jwt;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,9 @@ public class BookingController {
 
         Booking createdBooking = bookingService.createBooking(createBookingRequest);
         CreateBookingResponseDto createBookingResponseDto = bookingMapper.toDto(createdBooking);
+        if (!createdBooking.getQrCodes().isEmpty()) {
+            createBookingResponseDto.setQrCodeImageBase64(createdBooking.getQrCodes().get(0).getValue());
+        }
         return new ResponseEntity<>(createBookingResponseDto, HttpStatus.CREATED);
     }
 
@@ -116,5 +120,4 @@ public class BookingController {
         }
         return ResponseEntity.noContent().build();
     }
-
 }

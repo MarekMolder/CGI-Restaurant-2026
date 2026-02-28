@@ -44,8 +44,11 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private BookingStatusEnum status;
 
-    @Column(name = "qr_token", nullable = false)
+    @Column(name = "qr_token", length = 255)
     private String qrToken;
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<QrCode> qrCodes = new ArrayList<>();
 
     @Column(name = "special_requests", columnDefinition = "TEXT")
     private String specialRequests;

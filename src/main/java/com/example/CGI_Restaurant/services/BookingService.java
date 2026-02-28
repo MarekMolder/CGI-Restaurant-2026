@@ -23,5 +23,4 @@ public interface BookingService {
 
     void deleteBooking(UUID id);
     void deleteBookingForCustomer(UUID id, UUID customerId);
-
 }

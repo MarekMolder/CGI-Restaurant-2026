@@ -47,7 +47,6 @@ public class CreateBookingRequestDto {
     @NotNull(message = "Booking status is required")
     private BookingStatusEnum status;
 
-    @NotBlank(message = "QR token is required")
     @Size(max = 255)
     private String qrToken;
 

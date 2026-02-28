@@ -1,6 +1,10 @@
 package com.example.CGI_Restaurant.controllers;
 
 import com.example.CGI_Restaurant.domain.dtos.ApiErrorResponse;
+import com.example.CGI_Restaurant.exceptions.NoMoreTablesException;
+import com.example.CGI_Restaurant.exceptions.QrCodeGenerationException;
+import com.example.CGI_Restaurant.exceptions.RestaurantBookingException;
+import com.example.CGI_Restaurant.exceptions.QrCodeNotFoundException;
 import com.example.CGI_Restaurant.exceptions.notFoundExceptions.*;
 import com.example.CGI_Restaurant.exceptions.updateException.*;
 import jakarta.validation.ConstraintViolationException;
@@ -18,6 +22,36 @@ import java.util.List;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(NoMoreTablesException.class)
+    public ResponseEntity<ApiErrorResponse> handleNoMoreTablesException(NoMoreTablesException ex) {
+        log.error("Caught NoMoreTablesException", ex);
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("There are no more tables")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RestaurantBookingException.class)
+    public ResponseEntity<ApiErrorResponse> handleRestaurantBookingException(RestaurantBookingException ex) {
+        log.warn("RestaurantBookingException: {}", ex.getMessage());
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(ex.getMessage() != null ? ex.getMessage() : "Broneering ei ole võimalik")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(QrCodeGenerationException.class)
+    public ResponseEntity<ApiErrorResponse> handleQrCodeGenerationException(QrCodeGenerationException ex) {
+        log.error("Caught QrCodeGenerationException", ex);
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message("Unable to generate QR Code")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleException(Exception ex) {
@@ -174,6 +208,15 @@ public class GlobalExceptionHandler {
         ApiErrorResponse error = ApiErrorResponse.builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .message(ex.getMessage() != null ? ex.getMessage() : "Zone not found")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(QrCodeNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleQrCodeNotFoundException(QrCodeNotFoundException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage() != null ? ex.getMessage() : "Qr Code not found")
                 .build();
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
