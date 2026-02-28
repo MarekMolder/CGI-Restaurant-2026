@@ -9,10 +9,15 @@ import com.example.CGI_Restaurant.domain.createRequests.CreateBookingTableReques
 import com.example.CGI_Restaurant.domain.updateRequests.UpdateBookingPreferenceRequest;
 import com.example.CGI_Restaurant.domain.updateRequests.UpdateBookingRequest;
 import com.example.CGI_Restaurant.domain.updateRequests.UpdateBookingTableRequest;
+import com.example.CGI_Restaurant.exceptions.RestaurantBookingException;
 import com.example.CGI_Restaurant.exceptions.notFoundExceptions.BookingNotFoundException;
 import com.example.CGI_Restaurant.exceptions.notFoundExceptions.BookingPreferenceNotFoundException;
 import com.example.CGI_Restaurant.exceptions.updateException.BookingPreferenceUpdateException;
 import com.example.CGI_Restaurant.exceptions.updateException.BookingUpdateException;
+import com.example.CGI_Restaurant.repositories.BookingTableRepository;
+import com.example.CGI_Restaurant.repositories.UserRepository;
+import com.example.CGI_Restaurant.services.EmailService;
+import com.example.CGI_Restaurant.services.QrCodeService;
 import jakarta.persistence.EntityManager;
 import com.example.CGI_Restaurant.repositories.BookingRepository;
 import com.example.CGI_Restaurant.services.BookingPreferenceService;
@@ -35,11 +40,28 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final BookingPreferenceService bookingPreferenceService;
     private final BookingTableService bookingTableService;
+    private final BookingTableRepository bookingTableRepository;
     private final EntityManager entityManager;
+    private final UserRepository userRepository;
+    private final QrCodeService qrCodeService;
+    private final EmailService emailService;
 
     @Override
     @Transactional
     public Booking createBooking(CreateBookingRequest request) {
+        var tableRequests = request.getBookingTables() != null ? request.getBookingTables() : List.<CreateBookingTableRequest>of();
+        if (!tableRequests.isEmpty()) {
+            Set<UUID> requestedTableIds = tableRequests.stream()
+                    .map(CreateBookingTableRequest::getTableEntityId)
+                    .collect(Collectors.toSet());
+            List<UUID> bookedInRange = bookingTableRepository.findTableEntityIdsBookedBetween(
+                    request.getStartAt(), request.getEndAt());
+            boolean anyTaken = requestedTableIds.stream().anyMatch(bookedInRange::contains);
+            if (anyTaken) {
+                throw new RestaurantBookingException("Üks või mitu valitud lauda on antud ajahetkel juba broneeritud.");
+            }
+        }
+
         Booking booking = new Booking();
         booking.setGuestName(request.getUser().getName());
         booking.setGuestEmail(request.getUser().getEmail());
@@ -47,7 +69,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setEndAt(request.getEndAt());
         booking.setPartySize(request.getPartySize());
         booking.setStatus(request.getStatus());
-        booking.setQrToken(request.getQrToken());
+        booking.setQrToken(request.getQrToken() != null ? request.getQrToken() : "");
         booking.setSpecialRequests(request.getSpecialRequests());
         booking.setUser(request.getUser());
         Booking saved = bookingRepository.save(booking);
@@ -60,8 +82,7 @@ public class BookingServiceImpl implements BookingService {
             prefRequest.setPriority(pref.getPriority());
             bookingPreferenceService.create(prefRequest);
         }
-        var tables = request.getBookingTables() != null ? request.getBookingTables() : List.<CreateBookingTableRequest>of();
-        for (var tbl : tables) {
+        for (var tbl : tableRequests) {
             var tableRequest = new CreateBookingTableRequest();
             tableRequest.setBookingId(saved.getId());
             tableRequest.setTableEntityId(tbl.getTableEntityId());
@@ -69,6 +90,10 @@ public class BookingServiceImpl implements BookingService {
         }
         entityManager.flush();
         entityManager.refresh(saved);
+
+        var qrCode = qrCodeService.generateQrCode(saved);
+        saved.getQrCodes().add(qrCode);
+        emailService.sendBookingConfirmation(saved, qrCode.getValue());
         return saved;
     }
 
@@ -115,7 +140,7 @@ public class BookingServiceImpl implements BookingService {
         existingBooking.setEndAt(booking.getEndAt());
         existingBooking.setPartySize(booking.getPartySize());
         existingBooking.setStatus(booking.getStatus());
-        existingBooking.setQrToken(booking.getQrToken());
+        existingBooking.setQrToken(booking.getQrToken() != null ? booking.getQrToken() : "");
         existingBooking.setSpecialRequests(booking.getSpecialRequests());
 
         Set<UUID> requestBookingPreferenceIds = booking.getBookingPreferences()
@@ -170,7 +195,7 @@ public class BookingServiceImpl implements BookingService {
         existingBooking.setEndAt(booking.getEndAt());
         existingBooking.setPartySize(booking.getPartySize());
         existingBooking.setStatus(booking.getStatus());
-        existingBooking.setQrToken(booking.getQrToken());
+        existingBooking.setQrToken(booking.getQrToken() != null ? booking.getQrToken() : "");
         existingBooking.setSpecialRequests(booking.getSpecialRequests());
 
         Set<UUID> requestBookingPreferenceIds = booking.getBookingPreferences()
@@ -183,7 +208,7 @@ public class BookingServiceImpl implements BookingService {
                 !requestBookingPreferenceIds.contains(existingBookingPreference.getId()));
 
         Map<UUID, BookingPreference> existingBookingPreferenceIndex = existingBooking.getBookingPreferences().stream()
-                .collect(Collectors.toMap(BookingPreference::getId, Function.identity()));
+                        .collect(Collectors.toMap(BookingPreference::getId, Function.identity()));
 
         for(UpdateBookingPreferenceRequest bookingPreference : booking.getBookingPreferences()) {
             if(null == bookingPreference.getId()) {
@@ -219,4 +244,5 @@ public class BookingServiceImpl implements BookingService {
                         String.format("Booking with ID '%s' does not exist or does not belong to you", id)));
         bookingRepository.delete(booking);
     }
+
 }

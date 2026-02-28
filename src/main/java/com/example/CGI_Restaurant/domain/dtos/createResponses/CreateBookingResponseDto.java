@@ -23,6 +23,7 @@ public class CreateBookingResponseDto {
     private int partySize;
     private BookingStatusEnum status;
     private String qrToken;
+    private String qrCodeImageBase64;
     private String specialRequests;
     private UserInfoDto user;
     private List<CreateBookingPreferenceResponseDto> bookingPreferences = new ArrayList<>();

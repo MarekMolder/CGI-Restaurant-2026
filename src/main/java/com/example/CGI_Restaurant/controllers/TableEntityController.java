@@ -4,6 +4,7 @@ import com.example.CGI_Restaurant.domain.dtos.createRequests.CreateTableEntityRe
 import com.example.CGI_Restaurant.domain.dtos.createResponses.CreateTableEntityResponseDto;
 import com.example.CGI_Restaurant.domain.dtos.getResponses.GetTableEntityDetailsResponseDto;
 import com.example.CGI_Restaurant.domain.dtos.listResponses.ListTableEntityResponseDto;
+import com.example.CGI_Restaurant.domain.dtos.listResponses.TableAvailabilityItemDto;
 import com.example.CGI_Restaurant.domain.dtos.updateRequests.UpdateTableEntityRequestDto;
 import com.example.CGI_Restaurant.domain.dtos.updateResponses.UpdateTableEntityResponseDto;
 import com.example.CGI_Restaurant.domain.entities.TableEntity;
@@ -15,10 +16,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -37,8 +41,18 @@ public class TableEntityController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ListTableEntityResponseDto>> list(Pageable pageable) {
-        return ResponseEntity.ok(tableEntityService.list(pageable).map(tableEntityMapper::toListTableEntityResponseDto));
+    public ResponseEntity<Page<ListTableEntityResponseDto>> list(
+            @RequestParam(required = false) String q,
+            Pageable pageable) {
+
+        Page<TableEntity> tableEntities;
+        if(null != q && !q.trim().isEmpty()) {
+            tableEntities = tableEntityService.searchAvailableTables(q, pageable);
+        } else {
+            tableEntities = tableEntityService.list(pageable);
+        }
+
+        return ResponseEntity.ok(tableEntities.map(tableEntityMapper::toListTableEntityResponseDto));
     }
 
     @GetMapping("/{id}")
@@ -63,5 +77,21 @@ public class TableEntityController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         tableEntityService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<TableAvailabilityItemDto>> getAvailableTables(
+            @RequestParam(required = false) UUID seatingPlanId,
+            @RequestParam(required = false) UUID zoneId,
+            @RequestParam int partySize,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startAt,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endAt,
+            @RequestParam(required = false) List<UUID> preferredFeatureIds) {
+        if (seatingPlanId == null && zoneId == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<TableAvailabilityItemDto> list = tableEntityService.findTablesWithAvailability(
+                seatingPlanId, zoneId, partySize, startAt, endAt, preferredFeatureIds);
+        return ResponseEntity.ok(list);
     }
 }
