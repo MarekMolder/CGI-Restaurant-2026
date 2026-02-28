@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -24,5 +24,5 @@ public class CreateTableEntityRequest {
     private double height;
     private int rotationDegree;
     private boolean active;
-    private List<CreateBookingTableRequest> bookingTables = new ArrayList<>();
+    private List<UUID> adjacentTableIds = new ArrayList<>();
 }

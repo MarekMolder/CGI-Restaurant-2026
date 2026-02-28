@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
         log.warn("RestaurantBookingException: {}", ex.getMessage());
         ApiErrorResponse error = ApiErrorResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
-                .message(ex.getMessage() != null ? ex.getMessage() : "Broneering ei ole võimalik")
+                .message(ex.getMessage() != null ? ex.getMessage() : "Booking is not possible")
                 .build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -199,6 +199,15 @@ public class GlobalExceptionHandler {
         ApiErrorResponse error = ApiErrorResponse.builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .message(ex.getMessage() != null ? ex.getMessage() : "Table entity not found")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(com.example.CGI_Restaurant.exceptions.notFoundExceptions.MenuItemNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleMenuItemNotFoundException(com.example.CGI_Restaurant.exceptions.notFoundExceptions.MenuItemNotFoundException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage() != null ? ex.getMessage() : "Menu item not found")
                 .build();
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }

@@ -34,5 +34,7 @@ public interface TableEntityMapper {
     @Mapping(target = "zoneType", source = "entity.zone.type")
     @Mapping(target = "available", source = "available")
     @Mapping(target = "recommendationScore", source = "recommendationScore")
+    @Mapping(target = "tableIds", expression = "java(java.util.List.of(entity.getId()))")
+    @Mapping(target = "combined", constant = "false")
     TableAvailabilityItemDto toTableAvailabilityItemDto(TableEntity entity, boolean available, Integer recommendationScore);
 }
