@@ -22,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Creates and updates booking preferences; resolves booking and feature by ID.
+ */
 @Service
 @RequiredArgsConstructor
 public class BookingPreferenceServiceImpl implements BookingPreferenceService {

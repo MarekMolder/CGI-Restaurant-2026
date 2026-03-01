@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Request to create a restaurant with contact details and optional seating plans. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

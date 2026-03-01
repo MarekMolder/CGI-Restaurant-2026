@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** Request body for user registration (name, email, password). Validated. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

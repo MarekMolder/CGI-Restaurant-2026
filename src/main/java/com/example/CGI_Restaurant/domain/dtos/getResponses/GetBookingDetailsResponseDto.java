@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API response for a single booking (detail view). */
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetBookingDetailsResponseDto {

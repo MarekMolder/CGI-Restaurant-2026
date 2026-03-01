@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * JPA entity for a restaurant booking. Holds guest info, time slot, party size, status,
+ * and relations to user, QR codes, booking preferences and assigned tables.
+ */
 @Entity
 @Table(name = "bookings")
 @Getter

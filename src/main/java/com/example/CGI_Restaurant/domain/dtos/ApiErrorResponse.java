@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Standard error body returned by {@link com.example.CGI_Restaurant.controllers.GlobalExceptionHandler}.
+ * Contains HTTP status code, message, and optional field-level validation errors.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,6 +20,7 @@ public class ApiErrorResponse {
     private String message;
     private List<FieldError> errors;
 
+    /** Field name and validation message (e.g. for MethodArgumentNotValidException). */
     @Data
     @Builder
     @NoArgsConstructor

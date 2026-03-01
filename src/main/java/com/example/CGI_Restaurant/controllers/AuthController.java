@@ -14,12 +14,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST API for authentication: login and registration.
+ * Both endpoints are public (no JWT required). Returns a JWT token on success.
+ */
 @RestController
 @RequestMapping(path = "/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthenticationService authenticationService;
 
+    /** Authenticates user by email/password and returns a JWT. */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         UserDetails userDetails = authenticationService.authenticate(
@@ -34,6 +39,7 @@ public class AuthController {
         return ResponseEntity.ok(authResponse);
     }
 
+    /** Registers a new user and returns a JWT. Fails with 409 if email already exists. */
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         authenticationService.register(

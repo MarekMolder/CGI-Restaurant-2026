@@ -1,5 +1,6 @@
 package com.example.CGI_Restaurant.domain.entities;
 
+/** Type of seating plan layout (e.g. outdoor, floor, private area). */
 public enum SeatingPlanTypeEnum {
-    INDOOR, OUTDOOR, FLOOR_1, FLOOR_2, PRIVATE_AREA
+    OUTDOOR, FLOOR_1, FLOOR_2, PRIVATE_AREA
 }

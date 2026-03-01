@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Request to create a zone (name, type, color and optional table entities). */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

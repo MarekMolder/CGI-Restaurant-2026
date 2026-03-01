@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API response for a single feature (detail view). */
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetFeatureDetailsResponseDto {

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+/** API request body for creating a booking (slot, guest, preferences, tables). */
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateBookingRequestDto {

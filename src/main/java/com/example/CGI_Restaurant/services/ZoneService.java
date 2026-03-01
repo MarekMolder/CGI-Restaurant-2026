@@ -9,7 +9,11 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * CRUD service for zones (e.g. indoor/outdoor areas in a seating plan).
+ */
 public interface ZoneService {
+
     Zone create(CreateZoneRequest request);
     Page<Zone> list(Pageable pageable);
     Optional<Zone> getById(UUID id);

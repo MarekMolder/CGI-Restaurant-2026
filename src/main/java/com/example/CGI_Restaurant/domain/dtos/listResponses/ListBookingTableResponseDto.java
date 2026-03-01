@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
+/** API response item for a booking-table in list endpoints. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListBookingTableResponseDto {

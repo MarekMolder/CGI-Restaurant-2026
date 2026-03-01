@@ -12,17 +12,16 @@ import com.example.CGI_Restaurant.domain.updateRequests.UpdateRestaurantRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+/**
+ * MapStruct mapper between Restaurant entity and create/update/list/get DTOs. Uses SeatingPlanMapper for nested seating plans.
+ */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = SeatingPlanMapper.class)
 public interface RestaurantMapper {
+
     CreateRestaurantRequest fromDto(CreateRestaurantRequestDto dto);
-
     CreateRestaurantResponseDto toDto(Restaurant restaurant);
-
     ListRestaurantResponseDto toListRestaurantResponseDto(Restaurant restaurant);
-
     GetRestaurantDetailsResponseDto toGetRestaurantDetailsResponseDto(Restaurant restaurant);
-
     UpdateRestaurantRequest fromDto(UpdateRestaurantRequestDto dto);
-
     UpdateRestaurantResponseDto toUpdateRestaurantResponseDto(Restaurant restaurant);
 }

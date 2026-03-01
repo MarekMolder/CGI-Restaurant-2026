@@ -12,17 +12,16 @@ import com.example.CGI_Restaurant.domain.updateRequests.UpdateFeatureRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+/**
+ * MapStruct mapper between Feature entity and create/update/list/get DTOs.
+ */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FeatureMapper {
+
     CreateFeatureRequest fromDto(CreateFeatureRequestDto dto);
-
     CreateFeatureResponseDto toDto(Feature feature);
-
     ListFeatureResponseDto toListFeatureResponseDto(Feature feature);
-
     GetFeatureDetailsResponseDto toGetFeatureDetailsResponseDto(Feature feature);
-
     UpdateFeatureRequest fromDto(UpdateFeatureRequestDto dto);
-
     UpdateFeatureResponseDto toUpdateFeatureResponseDto(Feature feature);
 }

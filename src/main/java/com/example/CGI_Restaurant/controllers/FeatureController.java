@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+/**
+ * REST API for restaurant features (e.g. outdoor seating, wheelchair access).
+ * Admin-only: all write operations require ADMIN role.
+ */
 @RestController
 @RequestMapping(path = "/api/v1/features")
 @RequiredArgsConstructor
@@ -29,6 +33,7 @@ public class FeatureController {
     private final FeatureMapper featureMapper;
     private final FeatureService featureService;
 
+    /** Creates a new feature. Admin only. */
     @PostMapping
     public ResponseEntity<CreateFeatureResponseDto> create(@Valid @RequestBody CreateFeatureRequestDto dto) {
         CreateFeatureRequest request = featureMapper.fromDto(dto);
@@ -36,11 +41,13 @@ public class FeatureController {
         return new ResponseEntity<>(featureMapper.toDto(created), HttpStatus.CREATED);
     }
 
+    /** Returns a paginated list of all features. */
     @GetMapping
     public ResponseEntity<Page<ListFeatureResponseDto>> list(Pageable pageable) {
         return ResponseEntity.ok(featureService.list(pageable).map(featureMapper::toListFeatureResponseDto));
     }
 
+    /** Returns a single feature by ID, or 404 if not found. */
     @GetMapping("/{id}")
     public ResponseEntity<GetFeatureDetailsResponseDto> getById(@PathVariable UUID id) {
         return featureService.getById(id)
@@ -49,6 +56,7 @@ public class FeatureController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /** Updates an existing feature. Admin only. */
     @PutMapping("/{id}")
     public ResponseEntity<UpdateFeatureResponseDto> update(
             @PathVariable UUID id,
@@ -59,6 +67,7 @@ public class FeatureController {
         return ResponseEntity.ok(featureMapper.toUpdateFeatureResponseDto(updated));
     }
 
+    /** Deletes a feature by ID. Admin only. */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         featureService.delete(id);

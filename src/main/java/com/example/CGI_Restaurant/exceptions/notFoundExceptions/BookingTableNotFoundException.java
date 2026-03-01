@@ -2,6 +2,9 @@ package com.example.CGI_Restaurant.exceptions.notFoundExceptions;
 
 import com.example.CGI_Restaurant.exceptions.RestaurantBookingException;
 
+/**
+ * Thrown when a booking-table association is not found. Mapped to 404 by GlobalExceptionHandler.
+ */
 public class BookingTableNotFoundException extends RestaurantBookingException {
     public BookingTableNotFoundException() {
     }

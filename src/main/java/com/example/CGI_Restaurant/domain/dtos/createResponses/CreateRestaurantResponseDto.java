@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API response after creating a restaurant. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateRestaurantResponseDto {

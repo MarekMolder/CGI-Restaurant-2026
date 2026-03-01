@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+/** Request to update a booking preference (id and new priority). */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

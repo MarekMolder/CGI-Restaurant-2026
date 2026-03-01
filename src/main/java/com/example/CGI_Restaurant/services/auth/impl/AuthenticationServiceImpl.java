@@ -22,6 +22,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Implementation of authentication: delegates login to Spring's AuthenticationManager,
+ * stores hashed passwords on register, and issues/validates JWT tokens with the configured secret.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -36,6 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private static final long JWT_EXPIRY_MS = 86400000L;
 
+    /** Delegates to AuthenticationManager and returns UserDetails on success. */
     @Override
     public UserDetails authenticate(String email, String password) {
         authenticationManager.authenticate(

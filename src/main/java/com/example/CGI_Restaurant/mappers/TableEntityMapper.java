@@ -14,21 +14,20 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+/**
+ * MapStruct mapper between TableEntity and create/update/list/get DTOs. Also maps to TableAvailabilityItemDto for availability endpoints.
+ */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = BookingTableMapper.class)
 public interface TableEntityMapper {
 
     CreateTableEntityRequest fromDto(CreateTableEntityRequestDto dto);
-
     CreateTableEntityResponseDto toDto(TableEntity tableEntity);
-
     ListTableEntityResponseDto toListTableEntityResponseDto(TableEntity tableEntity);
-
     GetTableEntityDetailsResponseDto toGetTableEntityDetailsResponseDto(TableEntity tableEntity);
-
     UpdateTableEntityRequest fromDto(UpdateTableEntityRequestDto dto);
-
     UpdateTableEntityResponseDto toUpdateTableEntityResponseDto(TableEntity tableEntity);
 
+    /** Builds an availability DTO for a single table with zone info, availability flag and recommendation score. */
     @Mapping(target = "zoneId", source = "entity.zone.id")
     @Mapping(target = "zoneName", source = "entity.zone.name")
     @Mapping(target = "zoneType", source = "entity.zone.type")

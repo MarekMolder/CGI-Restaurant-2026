@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * CRUD for menu items and import from TheMealDB; maps to response DTOs for list by restaurant.
+ */
 @Service
 @RequiredArgsConstructor
 public class MenuItemServiceImpl implements MenuItemService {

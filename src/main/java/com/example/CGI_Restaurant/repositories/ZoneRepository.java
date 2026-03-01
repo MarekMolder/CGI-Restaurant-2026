@@ -9,9 +9,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Spring Data repository for {@link Zone}. Can load zones by IDs with features fetched for availability scoring.
+ */
 @Repository
 public interface ZoneRepository extends JpaRepository<Zone, UUID> {
 
+    /** Load zones by IDs with their features eagerly fetched. */
     @Query("SELECT DISTINCT z FROM Zone z LEFT JOIN FETCH z.features WHERE z.id IN :ids")
     List<Zone> findByIdInWithFeatures(@Param("ids") List<UUID> ids);
 }

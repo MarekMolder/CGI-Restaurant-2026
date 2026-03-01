@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
+/** API request body for updating a menu item. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateMenuItemRequestDto {

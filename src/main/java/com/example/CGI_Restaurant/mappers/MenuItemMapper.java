@@ -9,12 +9,13 @@ import com.example.CGI_Restaurant.domain.updateRequests.UpdateMenuItemRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+/**
+ * MapStruct mapper between MenuItem entity and request/response DTOs.
+ */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MenuItemMapper {
 
     MenuItemResponseDto toMenuItemResponseDto(MenuItem entity);
-
     CreateMenuItemRequest fromDto(CreateMenuItemRequestDto dto);
-
     UpdateMenuItemRequest fromDto(UpdateMenuItemRequestDto dto);
 }

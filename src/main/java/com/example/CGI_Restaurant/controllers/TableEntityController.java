@@ -25,6 +25,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * REST API for table entities (physical tables in a zone). Supports CRUD and availability search.
+ * Create/update/delete are admin-only. GET /available returns tables free in a time slot for a party size.
+ */
 @RestController
 @RequestMapping(path = "/api/v1/table-entities")
 @RequiredArgsConstructor
@@ -33,6 +37,7 @@ public class TableEntityController {
     private final TableEntityMapper tableEntityMapper;
     private final TableEntityService tableEntityService;
 
+    /** Creates a new table entity, optionally with adjacent tables. Admin only. */
     @PostMapping
     public ResponseEntity<CreateTableEntityResponseDto> create(@Valid @RequestBody CreateTableEntityRequestDto dto) {
         CreateTableEntityRequest request = tableEntityMapper.fromDto(dto);
@@ -40,6 +45,7 @@ public class TableEntityController {
         return new ResponseEntity<>(tableEntityMapper.toDto(created), HttpStatus.CREATED);
     }
 
+    /** Lists table entities, optionally filtered by search query {@code q}. */
     @GetMapping
     public ResponseEntity<Page<ListTableEntityResponseDto>> list(
             @RequestParam(required = false) String q,
@@ -55,6 +61,7 @@ public class TableEntityController {
         return ResponseEntity.ok(tableEntities.map(tableEntityMapper::toListTableEntityResponseDto));
     }
 
+    /** Returns a single table entity by ID, or 404. */
     @GetMapping("/{id}")
     public ResponseEntity<GetTableEntityDetailsResponseDto> getById(@PathVariable UUID id) {
         return tableEntityService.getById(id)
@@ -63,6 +70,7 @@ public class TableEntityController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /** Updates a table entity. Admin only. */
     @PutMapping("/{id}")
     public ResponseEntity<UpdateTableEntityResponseDto> update(
             @PathVariable UUID id,
@@ -73,12 +81,14 @@ public class TableEntityController {
         return ResponseEntity.ok(tableEntityMapper.toUpdateTableEntityResponseDto(updated));
     }
 
+    /** Deletes a table entity by ID. Admin only. */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         tableEntityService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
+    /** Returns tables available in the given time range for the party size, optionally filtered by zone or seating plan and preferred features. */
     @GetMapping("/available")
     public ResponseEntity<List<TableAvailabilityItemDto>> getAvailableTables(
             @RequestParam(required = false) UUID seatingPlanId,

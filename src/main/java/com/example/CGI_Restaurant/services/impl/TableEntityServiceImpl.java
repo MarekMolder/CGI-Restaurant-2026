@@ -26,10 +26,16 @@ import java.util.stream.Stream;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+/**
+ * Implementation of table entity operations. Filters available tables by capacity, min party size,
+ * and max empty seats; supports combined (adjacent) table options and feature-based scoring.
+ * Validates that a set of table IDs form a connected adjacent graph for booking.
+ */
 @Service
 @RequiredArgsConstructor
 public class TableEntityServiceImpl implements TableEntityService {
 
+    /** Maximum allowed empty seats when matching a table to party size. */
     public static final int MAX_EMPTY_SEATS = 2;
 
     private static final int FEATURE_MATCH_BONUS = 20;

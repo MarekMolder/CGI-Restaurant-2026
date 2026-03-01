@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+/** API request body for creating a zone. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateZoneRequestDto {

@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * JPA entity for an application user. Stores name, email, hashed password and role (CUSTOMER/ADMIN); has bookings.
+ */
 @Entity
 @Table(name = "users")
 @Getter

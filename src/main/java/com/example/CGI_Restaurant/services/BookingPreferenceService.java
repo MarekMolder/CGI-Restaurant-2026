@@ -9,7 +9,11 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * CRUD service for booking preferences (feature + priority linked to a booking).
+ */
 public interface BookingPreferenceService {
+
     BookingPreference create(CreateBookingPreferenceRequest request);
     Page<BookingPreference> list(Pageable pageable);
     Optional<BookingPreference> getById(UUID id);

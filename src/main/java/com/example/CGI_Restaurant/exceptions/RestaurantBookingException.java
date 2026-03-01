@@ -1,5 +1,9 @@
 package com.example.CGI_Restaurant.exceptions;
 
+/**
+ * Thrown when a booking request is invalid: outside opening hours, wrong duration,
+ * tables already booked, or tables not adjacent. Mapped to 400 by GlobalExceptionHandler.
+ */
 public class RestaurantBookingException extends RuntimeException {
 
     public RestaurantBookingException() {

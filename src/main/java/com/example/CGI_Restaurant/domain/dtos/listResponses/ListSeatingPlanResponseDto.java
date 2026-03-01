@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API response item for a seating plan in list endpoints. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListSeatingPlanResponseDto {

@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+/**
+ * Spring Data repository for {@link com.example.CGI_Restaurant.domain.entities.SeatingPlan}.
+ */
 @Repository
 public interface SeatingPlanRepository extends JpaRepository<SeatingPlan, UUID> {
 }

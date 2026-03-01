@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
+/** API request body for updating a booking-table link. */
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateBookingTableRequestDto {

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API response item for table availability: single or combined table, with availability and recommendation score. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class TableAvailabilityItemDto {

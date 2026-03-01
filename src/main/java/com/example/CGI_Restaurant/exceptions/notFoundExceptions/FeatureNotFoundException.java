@@ -2,6 +2,9 @@ package com.example.CGI_Restaurant.exceptions.notFoundExceptions;
 
 import com.example.CGI_Restaurant.exceptions.RestaurantBookingException;
 
+/**
+ * Thrown when a feature is not found by ID. Mapped to 404 by GlobalExceptionHandler.
+ */
 public class FeatureNotFoundException extends RestaurantBookingException {
     public FeatureNotFoundException() {
     }

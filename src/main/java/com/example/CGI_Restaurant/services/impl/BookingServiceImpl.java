@@ -36,6 +36,11 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Default implementation of booking operations. Enforces opening hours and booking duration,
+ * checks table availability and adjacency for multi-table bookings, creates preferences and
+ * booking-table links, generates QR code and sends confirmation email.
+ */
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
@@ -136,111 +141,73 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public Booking updateBookingForCustomer(UUID id, UUID customerId, UpdateBookingRequest booking) {
-        if(booking.getId() == null) {
-            throw new BookingUpdateException("Booking ID cannot be null");
-        }
-
-        if(!id.equals(booking.getId())) {
-            throw new BookingUpdateException("Cannot update the ID of a booking");
-        }
-
+        validateUpdateRequest(id, booking);
         Booking existingBooking = bookingRepository
                 .findByIdAndUserId(id, customerId)
                 .orElseThrow(() -> new BookingNotFoundException(
-                        String.format("Booking with ID '%s' does not exist", id))
-                );
-
-        existingBooking.setGuestName(booking.getGuestName());
-        existingBooking.setGuestEmail(booking.getGuestEmail());
-        existingBooking.setStartAt(booking.getStartAt());
-        existingBooking.setEndAt(booking.getEndAt());
-        existingBooking.setPartySize(booking.getPartySize());
-        existingBooking.setStatus(booking.getStatus());
-        existingBooking.setQrToken(booking.getQrToken() != null ? booking.getQrToken() : "");
-        existingBooking.setSpecialRequests(booking.getSpecialRequests());
-
-        Set<UUID> requestBookingPreferenceIds = booking.getBookingPreferences()
-                .stream()
-                .map(UpdateBookingPreferenceRequest::getId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        existingBooking.getBookingPreferences().removeIf(existingBookingPreference ->
-                !requestBookingPreferenceIds.contains(existingBookingPreference.getId()));
-
-        Map<UUID, BookingPreference> existingBookingPreferenceIndex = existingBooking.getBookingPreferences().stream()
-                        .collect(Collectors.toMap(BookingPreference::getId, Function.identity()));
-
-        for(UpdateBookingPreferenceRequest bookingPreference : booking.getBookingPreferences()) {
-            if(null == bookingPreference.getId()) {
-                BookingPreference bookingPreferenceToCreate = new BookingPreference();
-                bookingPreferenceToCreate.setPriority(bookingPreference.getPriority());
-                existingBooking.getBookingPreferences().add(bookingPreferenceToCreate);
-            } else if (existingBookingPreferenceIndex.containsKey(bookingPreference.getId())) {
-                BookingPreference existingBookingPreference = existingBookingPreferenceIndex.get(bookingPreference.getId());
-                existingBookingPreference.setPriority(bookingPreference.getPriority());
-            } else {
-                throw new BookingPreferenceNotFoundException(String.format("" +
-                        "Booking preference with ID '%s' does not exist", bookingPreference.getId()));
-            }
-        }
-
+                        String.format("Booking with ID '%s' does not exist", id)));
+        applyBookingFields(existingBooking, booking);
+        syncBookingPreferences(existingBooking, booking.getBookingPreferences());
         return bookingRepository.save(existingBooking);
     }
 
     @Override
     @Transactional
     public Booking updateBooking(UUID id, UpdateBookingRequest booking) {
-        if(booking.getId() == null) {
-            throw new BookingUpdateException("Booking ID cannot be null");
-        }
-
-        if(!id.equals(booking.getId())) {
-            throw new BookingUpdateException("Cannot update the ID of a booking");
-        }
-
+        validateUpdateRequest(id, booking);
         Booking existingBooking = bookingRepository
                 .findById(id)
                 .orElseThrow(() -> new BookingNotFoundException(
-                        String.format("Booking with ID '%s' does not exist", id))
-                );
+                        String.format("Booking with ID '%s' does not exist", id)));
+        applyBookingFields(existingBooking, booking);
+        syncBookingPreferences(existingBooking, booking.getBookingPreferences());
+        return bookingRepository.save(existingBooking);
+    }
 
-        existingBooking.setGuestName(booking.getGuestName());
-        existingBooking.setGuestEmail(booking.getGuestEmail());
-        existingBooking.setStartAt(booking.getStartAt());
-        existingBooking.setEndAt(booking.getEndAt());
-        existingBooking.setPartySize(booking.getPartySize());
-        existingBooking.setStatus(booking.getStatus());
-        existingBooking.setQrToken(booking.getQrToken() != null ? booking.getQrToken() : "");
-        existingBooking.setSpecialRequests(booking.getSpecialRequests());
+    private void validateUpdateRequest(UUID pathId, UpdateBookingRequest request) {
+        if (request.getId() == null) {
+            throw new BookingUpdateException("Booking ID cannot be null");
+        }
+        if (!pathId.equals(request.getId())) {
+            throw new BookingUpdateException("Cannot update the ID of a booking");
+        }
+    }
 
-        Set<UUID> requestBookingPreferenceIds = booking.getBookingPreferences()
-                .stream()
+    private void applyBookingFields(Booking existing, UpdateBookingRequest request) {
+        existing.setGuestName(request.getGuestName());
+        existing.setGuestEmail(request.getGuestEmail());
+        existing.setStartAt(request.getStartAt());
+        existing.setEndAt(request.getEndAt());
+        existing.setPartySize(request.getPartySize());
+        existing.setStatus(request.getStatus());
+        existing.setQrToken(request.getQrToken() != null ? request.getQrToken() : "");
+        existing.setSpecialRequests(request.getSpecialRequests());
+    }
+
+    private void syncBookingPreferences(Booking existingBooking, List<UpdateBookingPreferenceRequest> preferences) {
+        List<UpdateBookingPreferenceRequest> preferenceList = preferences != null ? preferences : List.of();
+        Set<UUID> requestIds = preferenceList.stream()
                 .map(UpdateBookingPreferenceRequest::getId)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
-        existingBooking.getBookingPreferences().removeIf(existingBookingPreference ->
-                !requestBookingPreferenceIds.contains(existingBookingPreference.getId()));
+        existingBooking.getBookingPreferences().removeIf(p -> !requestIds.contains(p.getId()));
 
-        Map<UUID, BookingPreference> existingBookingPreferenceIndex = existingBooking.getBookingPreferences().stream()
-                        .collect(Collectors.toMap(BookingPreference::getId, Function.identity()));
+        Map<UUID, BookingPreference> index = existingBooking.getBookingPreferences().stream()
+                .collect(Collectors.toMap(BookingPreference::getId, Function.identity()));
 
-        for(UpdateBookingPreferenceRequest bookingPreference : booking.getBookingPreferences()) {
-            if(null == bookingPreference.getId()) {
-                BookingPreference bookingPreferenceToCreate = new BookingPreference();
-                bookingPreferenceToCreate.setPriority(bookingPreference.getPriority());
-                existingBooking.getBookingPreferences().add(bookingPreferenceToCreate);
-            } else if (existingBookingPreferenceIndex.containsKey(bookingPreference.getId())) {
-                BookingPreference existingBookingPreference = existingBookingPreferenceIndex.get(bookingPreference.getId());
-                existingBookingPreference.setPriority(bookingPreference.getPriority());
+        for (UpdateBookingPreferenceRequest req : preferenceList) {
+            if (req.getId() == null) {
+                BookingPreference newPref = new BookingPreference();
+                newPref.setPriority(req.getPriority());
+                existingBooking.getBookingPreferences().add(newPref);
+            } else if (index.containsKey(req.getId())) {
+                index.get(req.getId()).setPriority(req.getPriority());
             } else {
-                throw new BookingPreferenceNotFoundException(String.format("" +
-                        "Booking preference with ID '%s' does not exist", bookingPreference.getId()));
+                throw new BookingPreferenceNotFoundException(
+                        String.format("Booking preference with ID '%s' does not exist", req.getId()));
             }
         }
-
-        return bookingRepository.save(existingBooking);
     }
 
     @Override

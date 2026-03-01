@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * JPA entity for a menu item belonging to a restaurant. Name, description, price, category; optional TheMealDB id and image URL.
+ */
 @Entity
 @Table(name = "menu_items")
 @Getter

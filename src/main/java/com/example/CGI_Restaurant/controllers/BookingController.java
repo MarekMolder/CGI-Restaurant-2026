@@ -26,6 +26,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * REST API for managing bookings. Customers see only their own bookings; admins see all.
+ * Create requires valid slot and optional table selection; response includes QR code image.
+ */
 @RestController
 @RequestMapping(path = "/api/v1/bookings")
 @RequiredArgsConstructor
@@ -34,6 +38,7 @@ public class BookingController {
     private final BookingMapper bookingMapper;
     private final BookingService bookingService;
 
+    /** Creates a booking for the current user; returns DTO with QR code image. */
     @PostMapping
     public ResponseEntity<CreateBookingResponseDto> createBooking(
             @AuthenticationPrincipal CustomerDetails currentUser,
@@ -49,6 +54,7 @@ public class BookingController {
         return new ResponseEntity<>(createBookingResponseDto, HttpStatus.CREATED);
     }
 
+    /** Lists bookings: admin gets all, customer gets only their own (paginated). */
     @GetMapping
     public ResponseEntity<Page<ListBookingResponseDto>> listBookings(
             @AuthenticationPrincipal CustomerDetails currentUser,
@@ -65,6 +71,7 @@ public class BookingController {
         return ResponseEntity.ok(bookings.map(bookingMapper::toListBookingResponseDto));
     }
 
+    /** Returns a single booking by ID; customers may only access their own. */
     @GetMapping(path = "/{bookingId}")
     public ResponseEntity<GetBookingDetailsResponseDto> getBooking(
             @AuthenticationPrincipal CustomerDetails currentUser,
@@ -84,6 +91,7 @@ public class BookingController {
 
     }
 
+    /** Updates a booking; customers may only update their own. */
     @PutMapping(path = "/{bookingId}")
     public ResponseEntity<UpdateBookingResponseDto> updateBooking(
             @AuthenticationPrincipal CustomerDetails currentUser,
@@ -108,6 +116,7 @@ public class BookingController {
         return ResponseEntity.ok(updateBookingResponseDto);
     }
 
+    /** Deletes a booking; customers may only delete their own. */
     @DeleteMapping(path = "/{bookingId}")
     public ResponseEntity<Void> deleteBooking(
             @AuthenticationPrincipal CustomerDetails currentUser,

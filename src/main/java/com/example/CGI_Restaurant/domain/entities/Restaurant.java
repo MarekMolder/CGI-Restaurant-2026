@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * JPA entity for a restaurant. Holds contact and address data; has seating plans and menu items.
+ */
 @Entity
 @Table(name = "restaurants")
 @Getter

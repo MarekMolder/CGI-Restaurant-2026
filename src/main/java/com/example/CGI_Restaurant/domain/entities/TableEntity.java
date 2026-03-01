@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * JPA entity for a physical table in a zone. Stores label, capacity, min party size, shape and position,
+ * and many-to-many adjacency for combining tables. Linked to zone and seating plan.
+ */
 @Entity
 @Table(name = "tables")
 @Getter

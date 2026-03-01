@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Request to create a seating plan with dimensions, type and optional zones/tables. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

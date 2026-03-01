@@ -12,17 +12,16 @@ import com.example.CGI_Restaurant.domain.updateRequests.UpdateZoneRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+/**
+ * MapStruct mapper between Zone entity and create/update/list/get DTOs. Uses TableEntityMapper for nested tables.
+ */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = TableEntityMapper.class)
 public interface ZoneMapper {
+
     CreateZoneRequest fromDto(CreateZoneRequestDto dto);
-
     CreateZoneResponseDto toDto(Zone zone);
-
     ListZoneResponseDto toListZoneResponseDto(Zone zone);
-
     GetZoneDetailsResponseDto toGetZoneDetailsResponseDto(Zone zone);
-
     UpdateZoneRequest fromDto(UpdateZoneRequestDto dto);
-
     UpdateZoneResponseDto toUpdateZoneResponseDto(Zone zone);
 }

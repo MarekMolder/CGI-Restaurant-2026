@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** Response after login/register: JWT token and expiry in seconds. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

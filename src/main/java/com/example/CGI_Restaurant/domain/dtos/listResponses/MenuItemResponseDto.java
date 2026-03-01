@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
+/** API response for a menu item (list or single). */
 @AllArgsConstructor
 @NoArgsConstructor
 public class MenuItemResponseDto {

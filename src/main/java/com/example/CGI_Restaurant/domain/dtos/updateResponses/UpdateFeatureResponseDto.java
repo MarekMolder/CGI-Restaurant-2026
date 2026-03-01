@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API response after updating a feature. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateFeatureResponseDto {

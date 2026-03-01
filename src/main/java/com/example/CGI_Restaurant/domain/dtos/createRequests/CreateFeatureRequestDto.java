@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
+/** API request body for creating a feature. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateFeatureRequestDto {

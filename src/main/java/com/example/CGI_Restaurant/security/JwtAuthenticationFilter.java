@@ -14,6 +14,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Servlet filter that extracts the JWT from the Authorization header, validates it,
+ * and sets the Spring Security context. Also exposes the current user's ID as request attribute "userId".
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/** Request to update a restaurant (id and contact/layout data). */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+/**
+ * REST API for seating plans (layout of zones and tables). Full CRUD; write operations require ADMIN.
+ */
 @RestController
 @RequestMapping(path = "/api/v1/seating-plans")
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class SeatingPlanController {
     private final SeatingPlanMapper seatingPlanMapper;
     private final SeatingPlanService seatingPlanService;
 
+    /** Creates a new seating plan. Admin only. */
     @PostMapping
     public ResponseEntity<CreateSeatingPlanResponseDto> create(@Valid @RequestBody CreateSeatingPlanRequestDto dto) {
         CreateSeatingPlanRequest request = seatingPlanMapper.fromDto(dto);
@@ -36,11 +40,13 @@ public class SeatingPlanController {
         return new ResponseEntity<>(seatingPlanMapper.toDto(created), HttpStatus.CREATED);
     }
 
+    /** Returns a paginated list of seating plans. */
     @GetMapping
     public ResponseEntity<Page<ListSeatingPlanResponseDto>> list(Pageable pageable) {
         return ResponseEntity.ok(seatingPlanService.list(pageable).map(seatingPlanMapper::toListSeatingPlanResponseDto));
     }
 
+    /** Returns a seating plan by ID, or 404. */
     @GetMapping("/{id}")
     public ResponseEntity<GetSeatingPlanDetailsResponseDto> getById(@PathVariable UUID id) {
         return seatingPlanService.getById(id)
@@ -49,6 +55,7 @@ public class SeatingPlanController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /** Updates a seating plan. Admin only. */
     @PutMapping("/{id}")
     public ResponseEntity<UpdateSeatingPlanResponseDto> update(
             @PathVariable UUID id,
@@ -59,6 +66,7 @@ public class SeatingPlanController {
         return ResponseEntity.ok(seatingPlanMapper.toUpdateSeatingPlanResponseDto(updated));
     }
 
+    /** Deletes a seating plan by ID. Admin only. */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         seatingPlanService.delete(id);

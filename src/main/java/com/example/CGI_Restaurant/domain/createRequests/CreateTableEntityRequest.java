@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/** Request to create a table entity: label, capacity, shape, position and optional adjacent table IDs. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

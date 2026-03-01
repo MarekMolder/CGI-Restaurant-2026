@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API response after updating a booking. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateBookingResponseDto {

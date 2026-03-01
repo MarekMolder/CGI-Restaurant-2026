@@ -8,6 +8,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * JPA entity for a QR code linked to a booking. Stores the image value (e.g. base64) and status (e.g. ACTIVE, EXPIRED).
+ */
 @Entity
 @Table(name = "qr_codes")
 @Getter
@@ -25,7 +28,7 @@ public class QrCode {
     @Enumerated(EnumType.STRING)
     private QrCodeStatusEnum status;
 
-    @Column(name = "value", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "`value`", columnDefinition = "TEXT", nullable = false)
     private String value;
 
     @ManyToOne(fetch = FetchType.LAZY)

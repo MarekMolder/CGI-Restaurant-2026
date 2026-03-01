@@ -2,6 +2,9 @@ package com.example.CGI_Restaurant.exceptions.notFoundExceptions;
 
 import com.example.CGI_Restaurant.exceptions.RestaurantBookingException;
 
+/**
+ * Thrown when a user is not found (e.g. by email). Mapped to 400 by GlobalExceptionHandler.
+ */
 public class UserNotFoundException extends RestaurantBookingException {
     public UserNotFoundException() {
     }

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
+/** API request body for updating a booking preference. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateBookingPreferenceRequestDto {

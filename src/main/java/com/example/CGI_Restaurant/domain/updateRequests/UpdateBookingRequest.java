@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/** Incoming data for updating a booking: must include id; may include guest info, slot and preference list. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

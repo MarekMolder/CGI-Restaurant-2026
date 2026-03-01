@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
+/** API request body for creating a booking preference. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateBookingPreferenceRequestDto {
-    /** Omitted when nested in CreateBookingRequest (server sets it); required when POST /booking-preferences */
     private UUID bookingId;
     @NotNull(message = "Feature ID is required")
     private UUID featureId;

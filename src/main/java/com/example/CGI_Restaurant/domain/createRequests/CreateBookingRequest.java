@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Incoming data for creating a booking: slot, guest info, optional preferences and table selection. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

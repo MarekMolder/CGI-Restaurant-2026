@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API request body for updating a seating plan. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateSeatingPlanRequestDto {
