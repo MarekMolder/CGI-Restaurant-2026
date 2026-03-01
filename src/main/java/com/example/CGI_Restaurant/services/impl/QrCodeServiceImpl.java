@@ -18,9 +18,14 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.UUID;
 
+/**
+ * Generates QR codes (ZXing) for bookings, persists them and can mark them expired after booking end.
+ */
 @Service
 @RequiredArgsConstructor
 public class QrCodeServiceImpl implements QrCodeService {
@@ -30,6 +35,7 @@ public class QrCodeServiceImpl implements QrCodeService {
 
     private final QRCodeWriter qrCodeWriter;
     private final QrCodeRepository qrCodeRepository;
+    private final Clock clock;
 
     @Override
     public QrCode generateQrCode(Booking booking) {
@@ -48,6 +54,19 @@ public class QrCodeServiceImpl implements QrCodeService {
         } catch (WriterException | IOException ex) {
             throw new QrCodeGenerationException("Failed to generate QR Code", ex);
         }
+    }
+
+    @Override
+    public QrCode markExpiredIfBookingEnded(QrCode qrCode) {
+        if (qrCode.getBooking() == null) {
+            return qrCode;
+        }
+        LocalDateTime now = LocalDateTime.now(clock);
+        if (qrCode.getBooking().getEndAt().isBefore(now) && qrCode.getStatus() == QrCodeStatusEnum.ACTIVE) {
+            qrCode.setStatus(QrCodeStatusEnum.EXPIRED);
+            return qrCodeRepository.saveAndFlush(qrCode);
+        }
+        return qrCode;
     }
 
     private String generateQrCodeImage(UUID uniqueId) throws WriterException, IOException {

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API response after creating a feature. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateFeatureResponseDto {

@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * JPA entity for a restaurant feature (e.g. outdoor seating, wheelchair access). Referenced by zones and booking preferences.
+ */
 @Entity
 @Table(name = "features")
 @Getter

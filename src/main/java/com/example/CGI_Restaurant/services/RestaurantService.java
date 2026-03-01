@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 import java.util.UUID;
 
+/** CRUD service for restaurants. */
 public interface RestaurantService {
     Restaurant create(CreateRestaurantRequest request);
     Page<Restaurant> list(Pageable pageable);

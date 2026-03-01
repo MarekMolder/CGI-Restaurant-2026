@@ -13,6 +13,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Spring Security UserDetails implementation that wraps a {@link User}. Exposes email as username,
+ * password hash, and role as ROLE_* authority. Used for authentication and JWT.
+ */
 @Getter
 @RequiredArgsConstructor
 public class CustomerDetails implements UserDetails {

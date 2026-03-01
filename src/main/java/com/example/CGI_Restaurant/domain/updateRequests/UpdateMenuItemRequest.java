@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+/** Request to update a menu item (id and product fields). */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

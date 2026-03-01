@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API request body for updating a booking. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateBookingRequestDto {

@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+/**
+ * REST API for restaurants. Create/update/delete are admin-only; list and get are public.
+ */
 @RestController
 @RequestMapping(path = "/api/v1/restaurants")
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class RestaurantController {
     private final RestaurantMapper restaurantMapper;
     private final RestaurantService restaurantService;
 
+    /** Creates a new restaurant. Admin only. */
     @PostMapping
     public ResponseEntity<CreateRestaurantResponseDto> create(@Valid @RequestBody CreateRestaurantRequestDto dto) {
         CreateRestaurantRequest request = restaurantMapper.fromDto(dto);
@@ -36,11 +40,13 @@ public class RestaurantController {
         return new ResponseEntity<>(restaurantMapper.toDto(created), HttpStatus.CREATED);
     }
 
+    /** Returns a paginated list of restaurants. Public. */
     @GetMapping
     public ResponseEntity<Page<ListRestaurantResponseDto>> list(Pageable pageable) {
         return ResponseEntity.ok(restaurantService.list(pageable).map(restaurantMapper::toListRestaurantResponseDto));
     }
 
+    /** Returns a single restaurant by ID, or 404. Public. */
     @GetMapping("/{id}")
     public ResponseEntity<GetRestaurantDetailsResponseDto> getById(@PathVariable UUID id) {
         return restaurantService.getById(id)
@@ -49,6 +55,7 @@ public class RestaurantController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /** Updates a restaurant. Admin only. */
     @PutMapping("/{id}")
     public ResponseEntity<UpdateRestaurantResponseDto> update(
             @PathVariable UUID id,
@@ -59,6 +66,7 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantMapper.toUpdateRestaurantResponseDto(updated));
     }
 
+    /** Deletes a restaurant by ID. Admin only. */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         restaurantService.delete(id);

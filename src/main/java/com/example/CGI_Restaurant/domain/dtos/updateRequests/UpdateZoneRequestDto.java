@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API request body for updating a zone. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateZoneRequestDto {

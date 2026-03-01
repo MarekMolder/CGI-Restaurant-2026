@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/** Request to update a seating plan (id, dimensions, type and optional zones/tables). */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

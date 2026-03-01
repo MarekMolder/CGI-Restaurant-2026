@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+/** API response after creating a booking preference. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateBookingPreferenceResponseDto {

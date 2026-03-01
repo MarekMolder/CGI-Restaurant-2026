@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API response item for a restaurant in list endpoints. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListRestaurantResponseDto {

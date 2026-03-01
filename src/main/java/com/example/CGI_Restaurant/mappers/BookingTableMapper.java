@@ -13,17 +13,16 @@ import com.example.CGI_Restaurant.domain.updateRequests.UpdateBookingTableReques
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+/**
+ * MapStruct mapper between BookingTable entity and create/update/list/get DTOs.
+ */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BookingTableMapper {
+
     CreateBookingTableRequest fromDto(CreateBookingTableRequestDto dto);
-
     CreateBookingTableResponseDto toDto(BookingTable bookingTable);
-
     ListBookingTableResponseDto toListBookingTableResponseDto(BookingTable bookingTable);
-
     GetBookingTableDetailsResponseDto toGetBookingTableDetailsResponseDto(BookingTable bookingTable);
-
     UpdateBookingTableRequest fromDto(UpdateBookingTableRequestDto dto);
-
     UpdateBookingTableResponseDto toUpdateBookingTableResponseDto(BookingTable bookingTable);
 }

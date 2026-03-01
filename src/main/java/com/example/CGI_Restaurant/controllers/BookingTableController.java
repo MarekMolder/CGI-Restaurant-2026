@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+/**
+ * REST API for booking-table associations (which table is assigned to a booking). Full CRUD.
+ */
 @RestController
 @RequestMapping(path = "/api/v1/booking-tables")
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class BookingTableController {
     private final BookingTableMapper bookingTableMapper;
     private final BookingTableService bookingTableService;
 
+    /** Links a table to a booking. */
     @PostMapping
     public ResponseEntity<CreateBookingTableResponseDto> create(@Valid @RequestBody CreateBookingTableRequestDto dto) {
         CreateBookingTableRequest request = bookingTableMapper.fromDto(dto);
@@ -36,11 +40,13 @@ public class BookingTableController {
         return new ResponseEntity<>(bookingTableMapper.toDto(created), HttpStatus.CREATED);
     }
 
+    /** Returns a paginated list of booking-table links. */
     @GetMapping
     public ResponseEntity<Page<ListBookingTableResponseDto>> list(Pageable pageable) {
         return ResponseEntity.ok(bookingTableService.list(pageable).map(bookingTableMapper::toListBookingTableResponseDto));
     }
 
+    /** Returns a booking-table by ID, or 404. */
     @GetMapping("/{id}")
     public ResponseEntity<GetBookingTableDetailsResponseDto> getById(@PathVariable UUID id) {
         return bookingTableService.getById(id)
@@ -49,6 +55,7 @@ public class BookingTableController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /** Updates a booking-table association. */
     @PutMapping("/{id}")
     public ResponseEntity<UpdateBookingTableResponseDto> update(
             @PathVariable UUID id,
@@ -59,6 +66,7 @@ public class BookingTableController {
         return ResponseEntity.ok(bookingTableMapper.toUpdateBookingTableResponseDto(updated));
     }
 
+    /** Deletes a booking-table link by ID. */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         bookingTableService.delete(id);

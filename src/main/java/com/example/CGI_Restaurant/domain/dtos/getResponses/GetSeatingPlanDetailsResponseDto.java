@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API response for a single seating plan (detail view). */
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetSeatingPlanDetailsResponseDto {

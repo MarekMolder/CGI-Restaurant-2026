@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * REST API for a restaurant's menu items. All operations are scoped by restaurantId. Write operations require ADMIN.
+ */
 @RestController
 @RequestMapping(path = "/api/v1/restaurants/{restaurantId}/menu")
 @RequiredArgsConstructor
@@ -26,12 +29,14 @@ public class MenuItemController {
     private final MenuItemService menuItemService;
     private final MenuItemMapper menuItemMapper;
 
+    /** Returns all menu items for the given restaurant. */
     @GetMapping
     public ResponseEntity<List<MenuItemResponseDto>> list(@PathVariable UUID restaurantId) {
         List<MenuItemResponseDto> items = menuItemService.listByRestaurantId(restaurantId);
         return ResponseEntity.ok(items);
     }
 
+    /** Creates a new menu item for the restaurant. Admin only. */
     @PostMapping
     public ResponseEntity<MenuItemResponseDto> create(
             @PathVariable UUID restaurantId,
@@ -42,6 +47,7 @@ public class MenuItemController {
         return new ResponseEntity<>(menuItemMapper.toMenuItemResponseDto(created), HttpStatus.CREATED);
     }
 
+    /** Creates a menu item by importing from TheMealDB by meal id. Admin only. */
     @PostMapping("/from-themealdb")
     public ResponseEntity<MenuItemResponseDto> addFromTheMealDB(
             @PathVariable UUID restaurantId,
@@ -50,6 +56,7 @@ public class MenuItemController {
         return new ResponseEntity<>(menuItemMapper.toMenuItemResponseDto(created), HttpStatus.CREATED);
     }
 
+    /** Updates a menu item. Admin only. */
     @PutMapping("/{menuItemId}")
     public ResponseEntity<MenuItemResponseDto> update(
             @PathVariable UUID restaurantId,
@@ -61,6 +68,7 @@ public class MenuItemController {
         return ResponseEntity.ok(menuItemMapper.toMenuItemResponseDto(updated));
     }
 
+    /** Deletes a menu item. Admin only. */
     @DeleteMapping("/{menuItemId}")
     public ResponseEntity<Void> delete(
             @PathVariable UUID restaurantId,

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Request to create a feature (code and display name). */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

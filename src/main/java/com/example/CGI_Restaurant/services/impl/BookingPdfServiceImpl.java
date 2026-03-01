@@ -1,5 +1,10 @@
 package com.example.CGI_Restaurant.services.impl;
 
+/**
+ * Generates a PDF with booking details and embedded QR code image (OpenPDF/iText).
+ * @author AI (assisted)
+ */
+
 import com.example.CGI_Restaurant.domain.entities.Booking;
 import com.example.CGI_Restaurant.services.BookingPdfService;
 import com.lowagie.text.Document;

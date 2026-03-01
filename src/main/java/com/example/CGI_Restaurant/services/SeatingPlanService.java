@@ -9,7 +9,11 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * CRUD service for seating plans (layout of zones and tables per restaurant).
+ */
 public interface SeatingPlanService {
+
     SeatingPlan create(CreateSeatingPlanRequest request);
     Page<SeatingPlan> list(Pageable pageable);
     Optional<SeatingPlan> getById(UUID id);

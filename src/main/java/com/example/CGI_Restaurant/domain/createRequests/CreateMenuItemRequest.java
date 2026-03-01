@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+/** Request to create a menu item for a restaurant. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

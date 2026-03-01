@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+/**
+ * REST API for zones (e.g. indoor/outdoor areas in a seating plan). Full CRUD; write operations require ADMIN.
+ */
 @RestController
 @RequestMapping(path = "/api/v1/zones")
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class ZoneController {
     private final ZoneMapper zoneMapper;
     private final ZoneService zoneService;
 
+    /** Creates a new zone. Admin only. */
     @PostMapping
     public ResponseEntity<CreateZoneResponseDto> create(@Valid @RequestBody CreateZoneRequestDto dto) {
         CreateZoneRequest request = zoneMapper.fromDto(dto);
@@ -36,11 +40,13 @@ public class ZoneController {
         return new ResponseEntity<>(zoneMapper.toDto(created), HttpStatus.CREATED);
     }
 
+    /** Returns a paginated list of zones. */
     @GetMapping
     public ResponseEntity<Page<ListZoneResponseDto>> list(Pageable pageable) {
         return ResponseEntity.ok(zoneService.list(pageable).map(zoneMapper::toListZoneResponseDto));
     }
 
+    /** Returns a zone by ID, or 404. */
     @GetMapping("/{id}")
     public ResponseEntity<GetZoneDetailsResponseDto> getById(@PathVariable UUID id) {
         return zoneService.getById(id)
@@ -49,6 +55,7 @@ public class ZoneController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /** Updates a zone. Admin only. */
     @PutMapping("/{id}")
     public ResponseEntity<UpdateZoneResponseDto> update(
             @PathVariable UUID id,
@@ -59,6 +66,7 @@ public class ZoneController {
         return ResponseEntity.ok(zoneMapper.toUpdateZoneResponseDto(updated));
     }
 
+    /** Deletes a zone by ID. Admin only. */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         zoneService.delete(id);

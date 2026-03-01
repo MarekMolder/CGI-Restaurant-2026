@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Reads opening hours and booking duration from configuration; validates that a time range falls within opening hours (weekday vs weekend).
+ */
 @Service
 public class RestaurantHoursServiceImpl implements RestaurantHoursService {
 
@@ -31,6 +34,9 @@ public class RestaurantHoursServiceImpl implements RestaurantHoursService {
 
     @Override
     public boolean isWithinOpeningHours(LocalDateTime start, LocalDateTime end) {
+        if (!start.toLocalDate().equals(end.toLocalDate())) {
+            return false;
+        }
         LocalTime weekdayOpen = LocalTime.parse(weekdayOpenStr, TIME_FORMAT);
         LocalTime weekdayClose = LocalTime.parse(weekdayCloseStr, TIME_FORMAT);
         LocalTime weekendOpen = LocalTime.parse(weekendOpenStr, TIME_FORMAT);

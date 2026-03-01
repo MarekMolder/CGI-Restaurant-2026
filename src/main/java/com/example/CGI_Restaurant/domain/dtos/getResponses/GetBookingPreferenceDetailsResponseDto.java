@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+/** API response for a single booking preference (detail view). */
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetBookingPreferenceDetailsResponseDto {

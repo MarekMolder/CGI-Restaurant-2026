@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
+/** API request body for linking a table to a booking. */
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateBookingTableRequestDto {
-    /** Omitted when nested in CreateBookingRequest (server sets it); required when POST /booking-tables */
     private UUID bookingId;
     @NotNull(message = "Table entity ID is required")
     private UUID tableEntityId;

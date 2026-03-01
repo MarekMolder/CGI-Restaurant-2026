@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+/**
+ * Spring Data repository for {@link BookingPreference}.
+ */
 @Repository
 public interface BookingPreferenceRepository extends JpaRepository<BookingPreference, UUID> {
 }

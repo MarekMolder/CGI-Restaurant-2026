@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Data
+/** API request body for adding a menu item from TheMealDB by meal id and price. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddMenuItemFromTheMealDBRequestDto {

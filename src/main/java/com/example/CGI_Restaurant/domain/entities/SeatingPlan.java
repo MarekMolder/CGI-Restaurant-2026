@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * JPA entity for a seating plan (layout) of a restaurant. Has dimensions, type, optional background SVG;
+ * contains zones and table entities.
+ */
 @Entity
 @jakarta.persistence.Table(name = "seating_plans")
 @Getter

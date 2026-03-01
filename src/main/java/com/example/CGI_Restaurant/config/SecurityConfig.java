@@ -19,14 +19,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Configures application security: JWT authentication, role-based access for admin endpoints,
+ * and a default admin user. Public access is allowed for login, register, and all GET endpoints.
+ */
 @Configuration
 public class SecurityConfig {
 
+    /** Registers the JWT filter that validates the Bearer token on each request. */
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(AuthenticationService authenticationService) {
         return new JwtAuthenticationFilter(authenticationService);
     }
 
+    /** Provides user details for authentication and ensures a default admin user exists. */
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         CustomerDetailsService customerDetailsService = new CustomerDetailsService(userRepository);
@@ -45,6 +51,7 @@ public class SecurityConfig {
         return customerDetailsService;
     }
 
+    /** Defines which paths require authentication or ADMIN role; disables CSRF and uses stateless sessions. */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
@@ -67,11 +74,13 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /** Delegating password encoder for hashing user passwords. */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+    /** Spring's authentication manager used for login. */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

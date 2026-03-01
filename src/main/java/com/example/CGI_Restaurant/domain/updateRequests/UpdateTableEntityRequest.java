@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/** Request to update a table entity (id and all display/capacity/adjacency fields). */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

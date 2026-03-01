@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+/** Request to assign a table to a booking. */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

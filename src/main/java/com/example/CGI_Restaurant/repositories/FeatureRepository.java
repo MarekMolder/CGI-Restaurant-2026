@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+/**
+ * Spring Data repository for {@link Feature}.
+ */
 @Repository
 public interface FeatureRepository extends JpaRepository<Feature, UUID> {
 }

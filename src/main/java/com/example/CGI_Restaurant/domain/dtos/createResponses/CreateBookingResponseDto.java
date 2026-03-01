@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API response after creating a booking (includes optional QR code image). */
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateBookingResponseDto {

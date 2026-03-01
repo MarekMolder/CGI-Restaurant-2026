@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Default CRUD implementation for features; validates ID on update.
+ */
 @Service
 @RequiredArgsConstructor
 public class FeatureServiceImpl implements FeatureService {

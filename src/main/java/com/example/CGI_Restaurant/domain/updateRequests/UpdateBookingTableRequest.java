@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+/** Request to update a booking-table link (id only; used for merge/sync). */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

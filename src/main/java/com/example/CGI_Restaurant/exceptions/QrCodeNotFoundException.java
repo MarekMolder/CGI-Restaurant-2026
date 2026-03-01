@@ -1,5 +1,8 @@
 package com.example.CGI_Restaurant.exceptions;
 
+/**
+ * Thrown when a QR code is not found by ID. Mapped to 404 by GlobalExceptionHandler.
+ */
 public class QrCodeNotFoundException extends RuntimeException {
 
     public QrCodeNotFoundException() {

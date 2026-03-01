@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+/** Request to attach a feature preference (with priority) to a booking. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

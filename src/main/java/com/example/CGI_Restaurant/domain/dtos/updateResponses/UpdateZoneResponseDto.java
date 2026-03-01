@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API response after updating a zone. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateZoneResponseDto {

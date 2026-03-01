@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Data
+/** API request body for creating a menu item. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateMenuItemRequestDto {

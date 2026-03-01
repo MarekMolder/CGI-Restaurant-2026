@@ -9,6 +9,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * JPA entity for a customer preference on a booking (e.g. window seat, high priority). Links booking to a feature with a priority.
+ */
 @Entity
 @Table(name = "booking_preferences")
 @Getter

@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * JPA entity for a zone within a seating plan (e.g. indoor/outdoor). Has tables and optional features.
+ */
 @Entity
 @jakarta.persistence.Table(name = "zones")
 @Getter

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/** Request to update a zone (id, name, type, color and optional table entities). */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

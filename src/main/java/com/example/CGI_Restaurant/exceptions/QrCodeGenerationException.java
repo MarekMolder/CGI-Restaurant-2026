@@ -1,5 +1,8 @@
 package com.example.CGI_Restaurant.exceptions;
 
+/**
+ * Thrown when QR code generation fails (e.g. ZXing error). Mapped to 500 by GlobalExceptionHandler.
+ */
 public class QrCodeGenerationException extends RuntimeException {
 
     public QrCodeGenerationException() {

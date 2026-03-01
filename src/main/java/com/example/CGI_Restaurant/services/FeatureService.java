@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 import java.util.UUID;
 
+/** CRUD service for restaurant features (e.g. outdoor seating, wheelchair access). */
 public interface FeatureService {
     Feature create(CreateFeatureRequest request);
     Page<Feature> list(Pageable pageable);

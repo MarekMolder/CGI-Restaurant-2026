@@ -16,6 +16,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Fetches categories and meals from TheMealDB API; can import a meal as a menu item for a restaurant.
+ * @author AI (assisted)
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j

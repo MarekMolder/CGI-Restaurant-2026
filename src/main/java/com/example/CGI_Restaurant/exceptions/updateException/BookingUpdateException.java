@@ -2,6 +2,9 @@ package com.example.CGI_Restaurant.exceptions.updateException;
 
 import com.example.CGI_Restaurant.exceptions.RestaurantBookingException;
 
+/**
+ * Thrown when booking update validation fails (e.g. null ID or ID mismatch). Mapped to 400 by GlobalExceptionHandler.
+ */
 public class BookingUpdateException extends RestaurantBookingException {
     public BookingUpdateException() {
     }

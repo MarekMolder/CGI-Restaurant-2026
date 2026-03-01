@@ -8,6 +8,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * JPA entity linking a booking to a table. Many-to-one to Booking and TableEntity.
+ */
 @Entity
 @jakarta.persistence.Table(name = "booking_tables")
 @Getter

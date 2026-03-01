@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API response item for a booking in list endpoints. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListBookingResponseDto {

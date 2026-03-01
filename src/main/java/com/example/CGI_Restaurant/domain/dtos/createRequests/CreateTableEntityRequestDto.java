@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+/** API request body for creating a table entity. */
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateTableEntityRequestDto {
