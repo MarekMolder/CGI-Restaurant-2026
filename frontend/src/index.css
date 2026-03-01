@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply font-body text-stone-200 antialiased;
+}
+
+/* Subtle starfield background */
+.starfield {
+  background-color: #0d0d0d;
+  background-image:
+    radial-gradient(1.2px 1.2px at 10px 20px, rgba(255,255,255,0.35), transparent),
+    radial-gradient(1.2px 1.2px at 60px 80px, rgba(255,255,255,0.2), transparent),
+    radial-gradient(1px 1px at 120px 40px, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1.2px 1.2px at 200px 120px, rgba(255,255,255,0.25), transparent),
+    radial-gradient(1px 1px at 280px 60px, rgba(255,255,255,0.2), transparent);
+  background-size: 320px 200px;
+}
