@@ -1,5 +1,7 @@
 package com.example.CGI_Restaurant.services;
 
+import com.example.CGI_Restaurant.domain.dtos.getResponses.OpeningHoursResponseDto;
+
 import java.time.LocalDateTime;
 
 /** Provides opening hours checks and configured booking duration for the restaurant. */
@@ -10,4 +12,7 @@ public interface RestaurantHoursService {
 
     /** Returns the configured booking duration in hours (e.g. 2). */
     int getBookingDurationHours();
+
+    /** Returns opening hours and booking duration for the frontend (e.g. time slot generation). */
+    OpeningHoursResponseDto getOpeningHours();
 }

@@ -1,5 +1,6 @@
 package com.example.CGI_Restaurant.services.impl;
 
+import com.example.CGI_Restaurant.domain.dtos.getResponses.OpeningHoursResponseDto;
 import com.example.CGI_Restaurant.services.RestaurantHoursService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,17 @@ public class RestaurantHoursServiceImpl implements RestaurantHoursService {
     @Override
     public int getBookingDurationHours() {
         return bookingDurationHours;
+    }
+
+    @Override
+    public OpeningHoursResponseDto getOpeningHours() {
+        return new OpeningHoursResponseDto(
+                weekdayOpenStr,
+                weekdayCloseStr,
+                weekendOpenStr,
+                weekendCloseStr,
+                bookingDurationHours
+        );
     }
 
     private static boolean isWeekend(DayOfWeek day) {
