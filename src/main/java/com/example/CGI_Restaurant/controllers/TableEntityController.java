@@ -5,6 +5,7 @@ import com.example.CGI_Restaurant.domain.dtos.createResponses.CreateTableEntityR
 import com.example.CGI_Restaurant.domain.dtos.getResponses.GetTableEntityDetailsResponseDto;
 import com.example.CGI_Restaurant.domain.dtos.listResponses.ListTableEntityResponseDto;
 import com.example.CGI_Restaurant.domain.dtos.listResponses.TableAvailabilityItemDto;
+import com.example.CGI_Restaurant.domain.dtos.updateRequests.TablePositionRequestDto;
 import com.example.CGI_Restaurant.domain.dtos.updateRequests.UpdateTableEntityRequestDto;
 import com.example.CGI_Restaurant.domain.dtos.updateResponses.UpdateTableEntityResponseDto;
 import com.example.CGI_Restaurant.domain.entities.TableEntity;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -45,19 +47,23 @@ public class TableEntityController {
         return new ResponseEntity<>(tableEntityMapper.toDto(created), HttpStatus.CREATED);
     }
 
-    /** Lists table entities, optionally filtered by search query {@code q}. */
+    /** Lists table entities, optionally by zone (floor plan) or search query {@code q}. */
     @GetMapping
-    public ResponseEntity<Page<ListTableEntityResponseDto>> list(
+    public ResponseEntity<?> list(
+            @RequestParam(required = false) UUID zoneId,
             @RequestParam(required = false) String q,
             Pageable pageable) {
 
+        if (zoneId != null) {
+            List<TableEntity> tables = tableEntityService.listByZone(zoneId);
+            return ResponseEntity.ok(tables.stream().map(tableEntityMapper::toListTableEntityResponseDto).toList());
+        }
         Page<TableEntity> tableEntities;
-        if(null != q && !q.trim().isEmpty()) {
+        if (q != null && !q.trim().isEmpty()) {
             tableEntities = tableEntityService.searchAvailableTables(q, pageable);
         } else {
             tableEntities = tableEntityService.list(pageable);
         }
-
         return ResponseEntity.ok(tableEntities.map(tableEntityMapper::toListTableEntityResponseDto));
     }
 
@@ -78,6 +84,15 @@ public class TableEntityController {
         UpdateTableEntityRequest request = tableEntityMapper.fromDto(dto);
         request.setId(id);
         TableEntity updated = tableEntityService.update(id, request);
+        return ResponseEntity.ok(tableEntityMapper.toUpdateTableEntityResponseDto(updated));
+    }
+
+    /** Updates only x,y position (for floor plan drag-and-drop). Admin only. */
+    @PatchMapping("/{id}/position")
+    public ResponseEntity<UpdateTableEntityResponseDto> updatePosition(
+            @PathVariable UUID id,
+            @Valid @RequestBody TablePositionRequestDto dto) {
+        TableEntity updated = tableEntityService.updatePosition(id, dto.getX(), dto.getY());
         return ResponseEntity.ok(tableEntityMapper.toUpdateTableEntityResponseDto(updated));
     }
 

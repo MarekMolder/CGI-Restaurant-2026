@@ -22,6 +22,24 @@ export function isTokenValid(token) {
   }
 }
 
+/** Returns decoded JWT payload (subject, role, exp, ...) or null. */
+export function getTokenPayload(token) {
+  if (!token) return null;
+  try {
+    return JSON.parse(atob(token.split('.')[1]));
+  } catch {
+    return null;
+  }
+}
+
+/** Returns true if current user has ADMIN role (from JWT). */
+export function isAdmin() {
+  const token = getStoredToken();
+  if (!token || !isTokenValid(token)) return false;
+  const payload = getTokenPayload(token);
+  return payload?.role === 'ADMIN';
+}
+
 /**
  * Fetch wrapper that adds JWT from localStorage to requests.
  * Use for all authenticated API calls.

@@ -3,29 +3,42 @@ import { getStoredToken, setStoredToken } from '../api/client';
 
 const AuthContext = createContext(null);
 
-function syncFromStorage(setToken, setUserEmail) {
+function parseJwtPayload(token) {
+  if (!token) return { sub: null, role: null };
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return {
+      sub: payload.sub ?? null,
+      role: payload.role ?? null,
+    };
+  } catch {
+    return { sub: null, role: null };
+  }
+}
+
+function syncFromStorage(setToken, setUserEmail, setUserRole) {
   const stored = getStoredToken();
   setToken(stored);
   if (stored) {
-    try {
-      const payload = JSON.parse(atob(stored.split('.')[1]));
-      setUserEmail(payload.sub ?? null);
-    } catch {
-      setUserEmail(null);
-    }
+    const { sub, role } = parseJwtPayload(stored);
+    setUserEmail(sub);
+    setUserRole(role);
   } else {
     setUserEmail(null);
+    setUserRole(null);
   }
 }
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(getStoredToken);
-  const [userEmail, setUserEmail] = useState(null);
+  const initialToken = getStoredToken();
+  const initialPayload = parseJwtPayload(initialToken);
+  const [token, setToken] = useState(initialToken);
+  const [userEmail, setUserEmail] = useState(initialPayload.sub);
+  const [userRole, setUserRole] = useState(initialPayload.role);
 
-  // Sync with localStorage on mount and when tab gets focus (e.g. logged in in another tab)
   useEffect(() => {
-    syncFromStorage(setToken, setUserEmail);
-    const onFocus = () => syncFromStorage(setToken, setUserEmail);
+    syncFromStorage(setToken, setUserEmail, setUserRole);
+    const onFocus = () => syncFromStorage(setToken, setUserEmail, setUserRole);
     window.addEventListener('focus', onFocus);
     return () => window.removeEventListener('focus', onFocus);
   }, []);
@@ -35,35 +48,36 @@ export function AuthProvider({ children }) {
       setStoredToken(null);
       setToken(null);
       setUserEmail(null);
+      setUserRole(null);
     };
     window.addEventListener('auth:logout', handleLogout);
     return () => window.removeEventListener('auth:logout', handleLogout);
   }, []);
 
-  function setUserEmailFromToken(jwt) {
-    try {
-      const payload = JSON.parse(atob(jwt.split('.')[1]));
-      setUserEmail(payload.sub ?? null);
-    } catch {
-      setUserEmail(null);
-    }
+  function setUserFromToken(jwt) {
+    const { sub, role } = parseJwtPayload(jwt);
+    setUserEmail(sub);
+    setUserRole(role);
   }
 
   const loginSuccess = useCallback((newToken) => {
     setStoredToken(newToken);
     setToken(newToken);
-    setUserEmailFromToken(newToken);
+    setUserFromToken(newToken);
   }, []);
 
   const logout = useCallback(() => {
     setStoredToken(null);
     setToken(null);
     setUserEmail(null);
+    setUserRole(null);
   }, []);
 
   const value = {
     token,
     userEmail,
+    userRole,
+    isAdmin: userRole === 'ADMIN',
     loginSuccess,
     logout,
     isAuthenticated: !!token,

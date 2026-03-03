@@ -3,6 +3,7 @@ package com.example.CGI_Restaurant.services.auth.impl;
 import com.example.CGI_Restaurant.domain.entities.User;
 import com.example.CGI_Restaurant.domain.entities.UserRoleEnum;
 import com.example.CGI_Restaurant.repositories.UserRepository;
+import com.example.CGI_Restaurant.security.CustomerDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -69,6 +70,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        if (userDetails instanceof CustomerDetails cd) {
+            claims.put("role", cd.getRole().name());
+        }
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())

@@ -62,6 +62,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/features/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/v1/zones", "/api/v1/seating-plans", "/api/v1/restaurants", "/api/v1/table-entities").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/zones/**", "/api/v1/seating-plans/**", "/api/v1/restaurants/**", "/api/v1/table-entities/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/table-entities/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/zones/**", "/api/v1/seating-plans/**", "/api/v1/restaurants/**", "/api/v1/table-entities/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/v1/restaurants/*/menu", "/api/v1/restaurants/*/menu/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/restaurants/*/menu/**").hasRole("ADMIN")

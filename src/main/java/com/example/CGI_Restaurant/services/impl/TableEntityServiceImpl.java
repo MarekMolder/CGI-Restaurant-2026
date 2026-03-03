@@ -35,7 +35,6 @@ import java.util.Deque;
 @RequiredArgsConstructor
 public class TableEntityServiceImpl implements TableEntityService {
 
-    /** Maximum allowed empty seats when matching a table to party size. */
     public static final int MAX_EMPTY_SEATS = 2;
 
     private static final int FEATURE_MATCH_BONUS = 20;
@@ -68,6 +67,22 @@ public class TableEntityServiceImpl implements TableEntityService {
     @Override
     public Page<TableEntity> list(Pageable pageable) {
         return tableEntityRepository.findAll(pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TableEntity> listByZone(UUID zoneId) {
+        return zoneId == null ? List.of() : tableEntityRepository.findByZoneIdAndActiveTrueWithAdjacent(zoneId);
+    }
+
+    @Override
+    @Transactional
+    public TableEntity updatePosition(UUID id, double x, double y) {
+        TableEntity entity = tableEntityRepository.findById(id)
+                .orElseThrow(() -> new TableEntityNotFoundException("Table entity with ID '%s' not found".formatted(id)));
+        entity.setX(x);
+        entity.setY(y);
+        return tableEntityRepository.save(entity);
     }
 
     @Override
