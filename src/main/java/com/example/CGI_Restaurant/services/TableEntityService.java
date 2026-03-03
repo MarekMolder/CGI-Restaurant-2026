@@ -21,8 +21,17 @@ public interface TableEntityService {
 
     TableEntity create(CreateTableEntityRequest request);
     Page<TableEntity> list(Pageable pageable);
+
+    /** Lists active table entities in a zone (for floor plan editor). */
+    List<TableEntity> listByZone(UUID zoneId);
+
     Optional<TableEntity> getById(UUID id);
+
+    /** Updates only x,y position (for drag-and-drop). */
+    TableEntity updatePosition(UUID id, double x, double y);
+
     TableEntity update(UUID id, UpdateTableEntityRequest request);
+
     void delete(UUID id);
 
     /** Search tables by label (e.g. for admin UI). */

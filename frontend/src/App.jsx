@@ -7,10 +7,10 @@ import Home from './pages/Home';
 import Menu from './pages/Menu';
 import Booking from './pages/Booking';
 import Info from './pages/Info';
+import TableDrag from './pages/TableDrag';
 
 function ProtectedRoute({ children }) {
   const { token } = useAuth();
-  // Use localStorage as source of truth so auth is not lost when navigating or when context was stale
   const storedToken = getStoredToken();
   if (!storedToken && !token) return <Navigate to="/login" replace />;
   return children;
@@ -25,6 +25,7 @@ function App() {
       <Route path="/menu" element={<ProtectedRoute><Menu /></ProtectedRoute>} />
       <Route path="/booking" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
       <Route path="/info" element={<ProtectedRoute><Info /></ProtectedRoute>} />
+      <Route path="/admin/table-drag" element={<ProtectedRoute><TableDrag /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
