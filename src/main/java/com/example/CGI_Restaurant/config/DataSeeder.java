@@ -109,6 +109,7 @@ public class DataSeeder implements ApplicationRunner {
         Feature accessible = features.stream().filter(f -> f.getCode() == FeatureCodeEnum.ACCESSIBLE).findFirst().orElseThrow();
         Feature kids = features.stream().filter(f -> f.getCode() == FeatureCodeEnum.KIDS_NEARBY).findFirst().orElseThrow();
         Feature nearBar = features.stream().filter(f -> f.getCode() == FeatureCodeEnum.NEAR_BAR).findFirst().orElseThrow();
+        Feature center = features.stream().filter(f -> f.getCode() == FeatureCodeEnum.CENTER).findFirst().orElseThrow();
 
         Zone zoneIndoor = Zone.builder()
                 .name("Sisesaal")
@@ -144,28 +145,77 @@ public class DataSeeder implements ApplicationRunner {
         zonePrivate = zoneRepository.save(zonePrivate);
         log.info("Created 3 zones: Sisesaal, Terrass, Privaatruum.");
 
-        // 5) Tables (layout: a few 2-, 4-, 6- and 8-seaters in each zone)
+        // 5) Tables – Sisesaal 11 lauda, Terrass 12 lauda, Privaatruum 1 pikk laud (12 kohta)
+        // Igal laual on oma feature'd (laud ise on nt akna all); sobitamine broneerimisel läheb laua feature'te järgi.
         List<TableEntity> tables = new java.util.ArrayList<>();
-        tables.add(tableEntity("T1", 2, 1, 50, 50, 80, 70, 0, TableShapeEnum.RECT, zoneIndoor, plan, now));
-        tables.add(tableEntity("T2", 2, 1, 150, 50, 80, 70, 0, TableShapeEnum.RECT, zoneIndoor, plan, now));
-        tables.add(tableEntity("T3", 4, 2, 50, 150, 100, 90, 0, TableShapeEnum.CIRCLE, zoneIndoor, plan, now));
-        tables.add(tableEntity("T4", 4, 2, 170, 150, 100, 90, 0, TableShapeEnum.OVAL, zoneIndoor, plan, now));
-        tables.add(tableEntity("T5", 6, 4, 290, 50, 120, 90, 0, TableShapeEnum.RECT, zoneIndoor, plan, now));
-        tables.add(tableEntity("T6", 8, 6, 430, 80, 140, 100, 0, TableShapeEnum.RECT, zoneIndoor, plan, now));
-        tables.add(tableEntity("T7", 2, 1, 50, 280, 80, 70, 0, TableShapeEnum.CIRCLE, zoneTerrace, plan, now));
-        tables.add(tableEntity("T8", 4, 2, 150, 280, 100, 90, 0, TableShapeEnum.RECT, zoneTerrace, plan, now));
-        tables.add(tableEntity("T9", 4, 2, 270, 280, 100, 90, 0, TableShapeEnum.OVAL, zoneTerrace, plan, now));
-        tables.add(tableEntity("T10", 6, 4, 50, 400, 120, 90, 0, TableShapeEnum.RECT, zonePrivate, plan, now));
-        tables.add(tableEntity("T11", 8, 6, 200, 380, 140, 100, 0, TableShapeEnum.RECT, zonePrivate, plan, now));
+        // Sisesaal: T1–T11 (erinevad suurused, kokku 11 lauda)
+        tables.add(tableEntity("T1", 2, 1, 595.8, 432.7, 70, 60, 0, TableShapeEnum.RECT, zoneIndoor, plan, now));
+        tables.add(tableEntity("T2", 2, 1, 98.4, 436.1, 70, 60, 0, TableShapeEnum.RECT, zoneIndoor, plan, now));
+        tables.add(tableEntity("T3", 2, 1, 101.8, 283.8, 70, 60, 0, TableShapeEnum.CIRCLE, zoneIndoor, plan, now));
+        tables.add(tableEntity("T4", 4, 2, 449.4, 437.1, 90, 80, 0, TableShapeEnum.RECT, zoneIndoor, plan, now));
+        tables.add(tableEntity("T5", 4, 2, 586.0, 161.6, 90, 80, 0, TableShapeEnum.OVAL, zoneIndoor, plan, now));
+        tables.add(tableEntity("T6", 4, 2, 406.5, 327.2, 90, 80, 0, TableShapeEnum.CIRCLE, zoneIndoor, plan, now));
+        tables.add(tableEntity("T7", 6, 4, 238.3, 269.7, 110, 85, 0, TableShapeEnum.RECT, zoneIndoor, plan, now));
+        tables.add(tableEntity("T8", 6, 4, 245.3, 157.2, 110, 85, 0, TableShapeEnum.RECT, zoneIndoor, plan, now));
+        tables.add(tableEntity("T9", 4, 2, 582.4, 285.8, 90, 80, 0, TableShapeEnum.RECT, zoneIndoor, plan, now));
+        tables.add(tableEntity("T10", 4, 2, 243.2, 438.8, 90, 80, 0, TableShapeEnum.CIRCLE, zoneIndoor, plan, now));
+        tables.add(tableEntity("T11", 8, 6, 411.4, 194.1, 130, 95, 0, TableShapeEnum.RECT, zoneIndoor, plan, now));
+        // Terrass: T12–T23 (12 lauda)
+        tables.add(tableEntity("T12", 2, 1, 640.8, 102.8, 70, 60, 0, TableShapeEnum.CIRCLE, zoneTerrace, plan, now));
+        tables.add(tableEntity("T13", 2, 1, 373.0, 105.3, 70, 60, 0, TableShapeEnum.RECT, zoneTerrace, plan, now));
+        tables.add(tableEntity("T14", 2, 1, 642.7, 203.5, 70, 60, 0, TableShapeEnum.CIRCLE, zoneTerrace, plan, now));
+        tables.add(tableEntity("T15", 4, 2, 627.8, 300.8, 90, 80, 0, TableShapeEnum.OVAL, zoneTerrace, plan, now));
+        tables.add(tableEntity("T16", 4, 2, 363.3, 209.3, 90, 80, 0, TableShapeEnum.RECT, zoneTerrace, plan, now));
+        tables.add(tableEntity("T17", 4, 2, 630.8, 416.6, 90, 80, 0, TableShapeEnum.RECT, zoneTerrace, plan, now));
+        tables.add(tableEntity("T18", 4, 2, 135.0, 92.1, 90, 80, 0, TableShapeEnum.CIRCLE, zoneTerrace, plan, now));
+        tables.add(tableEntity("T19", 6, 4, 356.5, 329.2, 110, 85, 0, TableShapeEnum.RECT, zoneTerrace, plan, now));
+        tables.add(tableEntity("T20", 6, 4, 127.0, 207.0, 110, 85, 0, TableShapeEnum.RECT, zoneTerrace, plan, now));
+        tables.add(tableEntity("T21", 2, 1, 142.2, 332.4, 70, 60, 0, TableShapeEnum.CIRCLE, zoneTerrace, plan, now));
+        tables.add(tableEntity("T22", 4, 2, 363.4, 450.7, 90, 80, 0, TableShapeEnum.OVAL, zoneTerrace, plan, now));
+        tables.add(tableEntity("T23", 8, 6, 109.9, 430.9, 130, 95, 0, TableShapeEnum.RECT, zoneTerrace, plan, now));
+        // Privaatruum: T24 – üks pikk laud 12 inimesele
+        tables.add(tableEntity("T24", 12, 8, 239.8, 319.3, 320, 80, 0, TableShapeEnum.RECT, zonePrivate, plan, now));
         tables = tableEntityRepository.saveAll(tables);
-        log.info("Created {} tables.", tables.size());
+        log.info("Created {} tables (Sisesaal 11, Terrass 12, Privaatruum 1).", tables.size());
 
-        // Optional: mark T5 and T6 as adjacent (can be combined for large party)
-        TableEntity t5 = tables.stream().filter(t -> "T5".equals(t.getLabel())).findFirst().orElseThrow();
-        TableEntity t6 = tables.stream().filter(t -> "T6".equals(t.getLabel())).findFirst().orElseThrow();
-        t5.setAdjacentTables(new HashSet<>(Set.of(t6)));
-        t6.setAdjacentTables(new HashSet<>(Set.of(t5)));
-        tableEntityRepository.saveAll(List.of(t5, t6));
+        // Adjacent tables for combined booking: T7–T8 (Sisesaal), T19–T20 (Terrass)
+        TableEntity t7 = tables.stream().filter(t -> "T7".equals(t.getLabel())).findFirst().orElseThrow();
+        TableEntity t8 = tables.stream().filter(t -> "T8".equals(t.getLabel())).findFirst().orElseThrow();
+        TableEntity t19 = tables.stream().filter(t -> "T19".equals(t.getLabel())).findFirst().orElseThrow();
+        TableEntity t20 = tables.stream().filter(t -> "T20".equals(t.getLabel())).findFirst().orElseThrow();
+        t7.setAdjacentTables(new HashSet<>(Set.of(t8)));
+        t8.setAdjacentTables(new HashSet<>(Set.of(t7)));
+        t19.setAdjacentTables(new HashSet<>(Set.of(t20)));
+        t20.setAdjacentTables(new HashSet<>(Set.of(t19)));
+        tableEntityRepository.saveAll(List.of(t7, t8, t19, t20));
+
+        // Laua feature'd (iga laud omab oma eelistusi, nt akna all, vaikne)
+        setTableFeatures(tables, "T1", window);
+        setTableFeatures(tables, "T2", quiet);
+        setTableFeatures(tables, "T3", nearBar);
+        setTableFeatures(tables, "T4", accessible);
+        setTableFeatures(tables, "T5", window, quiet);
+        setTableFeatures(tables, "T6", center);
+        setTableFeatures(tables, "T7", nearBar);
+        setTableFeatures(tables, "T8", nearBar);
+        setTableFeatures(tables, "T9", window);
+        setTableFeatures(tables, "T10", quiet);
+        setTableFeatures(tables, "T11", center);
+        setTableFeatures(tables, "T12", window);
+        setTableFeatures(tables, "T13", accessible);
+        setTableFeatures(tables, "T14", window);
+        setTableFeatures(tables, "T15", window, accessible);
+        setTableFeatures(tables, "T16", accessible);
+        setTableFeatures(tables, "T17", window);
+        setTableFeatures(tables, "T18", quiet);
+        setTableFeatures(tables, "T19", accessible);
+        setTableFeatures(tables, "T20", window);
+        setTableFeatures(tables, "T21", window);
+        setTableFeatures(tables, "T22", accessible);
+        setTableFeatures(tables, "T23", window, accessible);
+        setTableFeatures(tables, "T24", privacy, quiet);
+        tableEntityRepository.saveAll(tables);
+        log.info("Assigned table-level features (laud = akna all / vaikne / jms).");
 
         // 6) Menu items: TheMealDB (selected set) + local drinks
         List<TheMealDBSeedEntry> themealdbSelections = List.of(
@@ -232,16 +282,15 @@ public class DataSeeder implements ApplicationRunner {
 
         Booking b2 = booking("Jüri Kask", "juri@example.ee", today.plusHours(14), today.plusHours(14 + durationHours), 4, customer, now);
         b2 = bookingRepository.save(b2);
-        bookingTableRepository.save(BookingTable.builder().booking(b2).tableEntity(tables.get(2)).createdAt(now).updatedAt(now).build());
+        bookingTableRepository.save(BookingTable.builder().booking(b2).tableEntity(tables.get(3)).createdAt(now).updatedAt(now).build());
 
         Booking b3 = booking("Liis Tamm", "liis@example.ee", today.plusHours(18), today.plusHours(18 + durationHours), 6, customer, now);
         b3 = bookingRepository.save(b3);
-        bookingTableRepository.save(BookingTable.builder().booking(b3).tableEntity(t5).createdAt(now).updatedAt(now).build());
+        bookingTableRepository.save(BookingTable.builder().booking(b3).tableEntity(t7).createdAt(now).updatedAt(now).build());
 
-        // One booking with preference (window seat)
         Booking b4 = booking("Oliver Saar", "oliver@example.ee", today.plusHours(13), today.plusHours(13 + durationHours), 2, customer, now);
         b4 = bookingRepository.save(b4);
-        bookingTableRepository.save(BookingTable.builder().booking(b4).tableEntity(tables.get(6)).createdAt(now).updatedAt(now).build());
+        bookingTableRepository.save(BookingTable.builder().booking(b4).tableEntity(tables.get(11)).createdAt(now).updatedAt(now).build());
         bookingPreferenceRepository.save(BookingPreference.builder()
                 .booking(b4).feature(window).priority(PreferencePriorityEnum.HIGH).createdAt(now).updatedAt(now).build());
 
@@ -274,6 +323,11 @@ public class DataSeeder implements ApplicationRunner {
                 .updatedAt(now)
                 .build();
         return t;
+    }
+
+    private static void setTableFeatures(List<TableEntity> tables, String label, Feature... featureArray) {
+        TableEntity t = tables.stream().filter(tbl -> label.equals(tbl.getLabel())).findFirst().orElseThrow();
+        t.setFeatures(new HashSet<>(List.of(featureArray)));
     }
 
     private record TheMealDBSeedEntry(String mealId, BigDecimal priceEur) {}

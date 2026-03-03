@@ -5,6 +5,7 @@ import com.example.CGI_Restaurant.domain.dtos.createResponses.CreateTableEntityR
 import com.example.CGI_Restaurant.domain.dtos.getResponses.GetTableEntityDetailsResponseDto;
 import com.example.CGI_Restaurant.domain.dtos.listResponses.ListTableEntityResponseDto;
 import com.example.CGI_Restaurant.domain.dtos.listResponses.TableAvailabilityItemDto;
+import com.example.CGI_Restaurant.domain.dtos.updateRequests.TableLayoutRequestDto;
 import com.example.CGI_Restaurant.domain.dtos.updateRequests.TablePositionRequestDto;
 import com.example.CGI_Restaurant.domain.dtos.updateRequests.UpdateTableEntityRequestDto;
 import com.example.CGI_Restaurant.domain.dtos.updateResponses.UpdateTableEntityResponseDto;
@@ -93,6 +94,16 @@ public class TableEntityController {
             @PathVariable UUID id,
             @Valid @RequestBody TablePositionRequestDto dto) {
         TableEntity updated = tableEntityService.updatePosition(id, dto.getX(), dto.getY());
+        return ResponseEntity.ok(tableEntityMapper.toUpdateTableEntityResponseDto(updated));
+    }
+
+    /** Updates position, size and rotation (for floor plan editor). Admin only. */
+    @PatchMapping("/{id}/layout")
+    public ResponseEntity<UpdateTableEntityResponseDto> updateLayout(
+            @PathVariable UUID id,
+            @Valid @RequestBody TableLayoutRequestDto dto) {
+        TableEntity updated = tableEntityService.updateLayout(
+                id, dto.getX(), dto.getY(), dto.getWidth(), dto.getHeight(), dto.getRotationDegree());
         return ResponseEntity.ok(tableEntityMapper.toUpdateTableEntityResponseDto(updated));
     }
 

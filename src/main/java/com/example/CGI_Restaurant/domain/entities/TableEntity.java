@@ -78,6 +78,13 @@ public class TableEntity {
             inverseJoinColumns = @JoinColumn(name = "adjacent_table_id"))
     private Set<TableEntity> adjacentTables = new HashSet<>();
 
+    /** Features of this table (e.g. window seat, quiet corner). Used for recommendation scoring. */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "table_features",
+            joinColumns = @JoinColumn(name = "table_id"),
+            inverseJoinColumns = @JoinColumn(name = "feature_id"))
+    private Set<Feature> features = new HashSet<>();
+
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;

@@ -10,7 +10,6 @@ import com.example.CGI_Restaurant.exceptions.updateException.TableEntityUpdateEx
 import com.example.CGI_Restaurant.mappers.TableEntityMapper;
 import com.example.CGI_Restaurant.repositories.BookingTableRepository;
 import com.example.CGI_Restaurant.repositories.TableEntityRepository;
-import com.example.CGI_Restaurant.repositories.ZoneRepository;
 import com.example.CGI_Restaurant.services.RestaurantHoursService;
 import com.example.CGI_Restaurant.services.TableEntityService;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +40,6 @@ public class TableEntityServiceImpl implements TableEntityService {
 
     private final TableEntityRepository tableEntityRepository;
     private final BookingTableRepository bookingTableRepository;
-    private final ZoneRepository zoneRepository;
     private final TableEntityMapper tableEntityMapper;
     private final RestaurantHoursService restaurantHoursService;
 
@@ -82,6 +80,19 @@ public class TableEntityServiceImpl implements TableEntityService {
                 .orElseThrow(() -> new TableEntityNotFoundException("Table entity with ID '%s' not found".formatted(id)));
         entity.setX(x);
         entity.setY(y);
+        return tableEntityRepository.save(entity);
+    }
+
+    @Override
+    @Transactional
+    public TableEntity updateLayout(UUID id, double x, double y, double width, double height, int rotationDegree) {
+        TableEntity entity = tableEntityRepository.findById(id)
+                .orElseThrow(() -> new TableEntityNotFoundException("Table entity with ID '%s' not found".formatted(id)));
+        entity.setX(x);
+        entity.setY(y);
+        entity.setWidth(width);
+        entity.setHeight(height);
+        entity.setRotationDegree(((rotationDegree % 360) + 360) % 360);
         return tableEntityRepository.save(entity);
     }
 
@@ -167,6 +178,16 @@ public class TableEntityServiceImpl implements TableEntityService {
                 ? tableEntityRepository.findByZoneIdAndActiveTrueWithAdjacent(zoneId)
                 : tableEntityRepository.findBySeatingPlanIdAndActiveTrueWithAdjacent(seatingPlanId);
 
+        List<Object[]> tableFeaturePairs = zoneId != null
+                ? tableEntityRepository.findTableIdAndFeatureIdByZoneId(zoneId)
+                : (seatingPlanId != null ? tableEntityRepository.findTableIdAndFeatureIdBySeatingPlanId(seatingPlanId) : List.of());
+        Map<UUID, Set<UUID>> tableIdToFeatureIds = new HashMap<>();
+        for (Object[] row : tableFeaturePairs) {
+            UUID tid = (UUID) row[0];
+            UUID fid = (UUID) row[1];
+            tableIdToFeatureIds.computeIfAbsent(tid, k -> new HashSet<>()).add(fid);
+        }
+
         Set<UUID> bookedTableIds = bookingTableRepository.findTableEntityIdsBookedBetween(startAt, endAt).stream()
                 .collect(Collectors.toSet());
 
@@ -177,20 +198,17 @@ public class TableEntityServiceImpl implements TableEntityService {
 
         Set<UUID> preferredIds = preferredFeatureIds != null && !preferredFeatureIds.isEmpty()
                 ? new HashSet<>(preferredFeatureIds) : Set.of();
-        Map<UUID, Set<UUID>> zoneIdToFeatureIds = new HashMap<>();
-        if (!preferredIds.isEmpty() && !allTables.isEmpty()) {
-            List<UUID> zoneIds = allTables.stream()
-                    .map(t -> t.getZone() != null ? t.getZone().getId() : null)
-                    .filter(Objects::nonNull)
-                    .distinct()
-                    .toList();
-            if (!zoneIds.isEmpty()) {
-                zoneRepository.findByIdInWithFeatures(zoneIds).forEach(z -> {
-                    Set<UUID> fIds = z.getFeatures().stream().map(com.example.CGI_Restaurant.domain.entities.Feature::getId).collect(Collectors.toSet());
-                    zoneIdToFeatureIds.put(z.getId(), fIds);
-                });
+
+        /** Feature bonus based on this table's features (laud is akna all, etc.), not zone. */
+        java.util.function.Function<TableEntity, Integer> tableFeatureBonus = t -> {
+            if (preferredIds.isEmpty()) return 0;
+            Set<UUID> tableFeatureIds = tableIdToFeatureIds.getOrDefault(t.getId(), Set.of());
+            int bonus = 0;
+            for (UUID fid : preferredIds) {
+                if (tableFeatureIds.contains(fid)) bonus += FEATURE_MATCH_BONUS;
             }
-        }
+            return bonus;
+        };
 
         List<TableAvailabilityItemDto> singleDtos = tables.stream()
                 .map(t -> {
@@ -198,14 +216,7 @@ public class TableEntityServiceImpl implements TableEntityService {
                     Integer score = null;
                     if (available) {
                         int baseScore = 100 - Math.max(0, t.getCapacity() - partySize);
-                        int featureBonus = 0;
-                        if (t.getZone() != null && zoneIdToFeatureIds.containsKey(t.getZone().getId())) {
-                            for (UUID fid : preferredIds) {
-                                if (zoneIdToFeatureIds.get(t.getZone().getId()).contains(fid)) {
-                                    featureBonus += FEATURE_MATCH_BONUS;
-                                }
-                            }
-                        }
+                        int featureBonus = tableFeatureBonus.apply(t);
                         score = baseScore + featureBonus;
                     }
                     return tableEntityMapper.toTableAvailabilityItemDto(t, available, score);
@@ -223,14 +234,7 @@ public class TableEntityServiceImpl implements TableEntityService {
                 if (t.getMinPartySize() > partySize || adj.getMinPartySize() > partySize) continue;
 
                 int baseScore = 100 - Math.max(0, sumCap - partySize);
-                int featureBonus = 0;
-                if (t.getZone() != null && zoneIdToFeatureIds.containsKey(t.getZone().getId())) {
-                    for (UUID fid : preferredIds) {
-                        if (zoneIdToFeatureIds.get(t.getZone().getId()).contains(fid)) {
-                            featureBonus += FEATURE_MATCH_BONUS;
-                        }
-                    }
-                }
+                int featureBonus = tableFeatureBonus.apply(t) + tableFeatureBonus.apply(adj);
                 Integer score = baseScore + featureBonus;
                 TableAvailabilityItemDto dto = new TableAvailabilityItemDto();
                 dto.setId(t.getId());

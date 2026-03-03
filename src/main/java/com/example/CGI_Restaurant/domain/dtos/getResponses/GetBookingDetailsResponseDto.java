@@ -32,4 +32,6 @@ public class GetBookingDetailsResponseDto {
     private List<ListBookingTableResponseDto> bookingTables = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    /** Base64-encoded QR code image (for display on "my bookings" page). */
+    private String qrCodeImageBase64;
 }

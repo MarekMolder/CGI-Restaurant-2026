@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Menu from './pages/Menu';
 import Booking from './pages/Booking';
 import Info from './pages/Info';
+import MyBookings from './pages/MyBookings';
 import TableDrag from './pages/TableDrag';
 
 function ProtectedRoute({ children }) {
@@ -25,6 +26,7 @@ function App() {
       <Route path="/menu" element={<ProtectedRoute><Menu /></ProtectedRoute>} />
       <Route path="/booking" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
       <Route path="/info" element={<ProtectedRoute><Info /></ProtectedRoute>} />
+      <Route path="/my-bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
       <Route path="/admin/table-drag" element={<ProtectedRoute><TableDrag /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

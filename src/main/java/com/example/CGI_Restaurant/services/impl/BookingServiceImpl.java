@@ -130,12 +130,12 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Optional<Booking> getBookingForCustomer(UUID id, UUID customerId) {
-        return bookingRepository.findByIdAndUserId(id, customerId);
+        return bookingRepository.findByIdAndUserIdWithQrCodes(id, customerId);
     }
 
     @Override
     public Optional<Booking> getBooking(UUID id) {
-        return bookingRepository.findById(id);
+        return bookingRepository.findByIdWithQrCodes(id);
     }
 
     @Override

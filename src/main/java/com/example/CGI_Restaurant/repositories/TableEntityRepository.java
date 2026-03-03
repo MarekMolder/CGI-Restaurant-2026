@@ -30,6 +30,13 @@ public interface TableEntityRepository extends JpaRepository<TableEntity, UUID> 
     @Query("SELECT DISTINCT t FROM TableEntity t LEFT JOIN FETCH t.adjacentTables WHERE t.zone.id = :zoneId AND t.active = true")
     List<TableEntity> findByZoneIdAndActiveTrueWithAdjacent(@Param("zoneId") UUID zoneId);
 
+    /** Table id and feature id pairs for a zone (for availability scoring by table features). */
+    @Query("SELECT t.id, f.id FROM TableEntity t JOIN t.features f WHERE t.zone.id = :zoneId AND t.active = true")
+    List<Object[]> findTableIdAndFeatureIdByZoneId(@Param("zoneId") UUID zoneId);
+
+    @Query("SELECT t.id, f.id FROM TableEntity t JOIN t.features f WHERE t.seatingPlan.id = :seatingPlanId AND t.active = true")
+    List<Object[]> findTableIdAndFeatureIdBySeatingPlanId(@Param("seatingPlanId") UUID seatingPlanId);
+
     /** Load active tables in a seating plan with adjacent tables fetched. */
     @Query("SELECT DISTINCT t FROM TableEntity t LEFT JOIN FETCH t.adjacentTables WHERE t.seatingPlan.id = :seatingPlanId AND t.active = true")
     List<TableEntity> findBySeatingPlanIdAndActiveTrueWithAdjacent(@Param("seatingPlanId") UUID seatingPlanId);
