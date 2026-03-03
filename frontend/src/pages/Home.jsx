@@ -8,6 +8,7 @@ export default function Home() {
   const actions = [
     { to: '/menu', label: 'Menüü', sub: 'Praed ja joogid', icon: '◆' },
     { to: '/booking', label: 'Broneeri laud', sub: 'Vali aeg ja koht', icon: '◇' },
+    { to: '/my-bookings', label: 'Minu broneeringud', sub: 'Broneeringu info ja QR-kood', icon: '▤' },
     { to: '/info', label: 'Restorani info', sub: 'Aadress ja kontakt', icon: '◈' },
   ];
 

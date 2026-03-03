@@ -30,6 +30,9 @@ public interface TableEntityService {
     /** Updates only x,y position (for drag-and-drop). */
     TableEntity updatePosition(UUID id, double x, double y);
 
+    /** Updates position, size and rotation (for floor plan editor). */
+    TableEntity updateLayout(UUID id, double x, double y, double width, double height, int rotationDegree);
+
     TableEntity update(UUID id, UpdateTableEntityRequest request);
 
     void delete(UUID id);

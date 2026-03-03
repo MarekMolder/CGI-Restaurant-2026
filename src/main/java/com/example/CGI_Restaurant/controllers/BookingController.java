@@ -85,7 +85,14 @@ public class BookingController {
             booking = bookingService.getBookingForCustomer(bookingId, currentUser.getId());
         }
 
-        return booking.map(bookingMapper::toGetBookingDetailsResponseDto)
+        return booking
+                .map(b -> {
+                    GetBookingDetailsResponseDto dto = bookingMapper.toGetBookingDetailsResponseDto(b);
+                    if (b.getQrCodes() != null && !b.getQrCodes().isEmpty()) {
+                        dto.setQrCodeImageBase64(b.getQrCodes().get(0).getValue());
+                    }
+                    return dto;
+                })
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
 
