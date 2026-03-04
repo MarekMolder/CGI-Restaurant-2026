@@ -1,5 +1,7 @@
 ## AI Usage
 
+*Eesti keelne versioon: [AI-KASUTAMINE.md](AI-USAGE-EST.md)*
+
 This project used AI as a development support tool, primarily to accelerate repetitive code generation and boilerplate creation.
 
 ### AI-assisted / AI-generated Components

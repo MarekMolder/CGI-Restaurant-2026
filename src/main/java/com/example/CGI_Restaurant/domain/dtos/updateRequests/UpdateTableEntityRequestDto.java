@@ -59,5 +59,8 @@ public class UpdateTableEntityRequestDto {
 
     private boolean active;
 
+    private UUID zoneId;
+
+    private List<UUID> featureIds = new ArrayList<>();
     private List<UUID> adjacentTableIds = new ArrayList<>();
 }

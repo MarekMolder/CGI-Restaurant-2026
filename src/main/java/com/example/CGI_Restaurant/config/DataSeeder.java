@@ -257,7 +257,7 @@ public class DataSeeder implements ApplicationRunner {
         }
         log.info("Created {} menu items (TheMealDB + drinks).", menuCount);
 
-        // 7) Demo customer (if not exists)
+        // 7) Demo customer
         String customerEmail = "klient@test.com";
         User customer = userRepository.findByEmail(customerEmail).orElseGet(() -> {
             User u = User.builder()

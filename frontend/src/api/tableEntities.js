@@ -1,9 +1,55 @@
 import { apiRequest } from './client';
 
+/** List all tables (paged). For admin settings. */
+export async function listAll(page = 0, size = 100) {
+  const res = await apiRequest(`/api/v1/table-entities?page=${page}&size=${size}`);
+  if (!res.ok) throw new Error('Laudu ei saadud');
+  return res.json();
+}
+
+/** Get single table by id. */
+export async function getById(id) {
+  const res = await apiRequest(`/api/v1/table-entities/${id}`);
+  if (!res.ok) throw new Error('Lauda ei leitud');
+  return res.json();
+}
+
 export async function listByZone(zoneId) {
   const res = await apiRequest(`/api/v1/table-entities?zoneId=${encodeURIComponent(zoneId)}`);
   if (!res.ok) throw new Error('Laudu ei saadud');
   return res.json();
+}
+
+/** Create table. Body: label, capacity, minPartySize, shape, x, y, width, height, rotationDegree, active, zoneId, featureIds?, adjacentTableIds? */
+export async function createTable(body) {
+  const res = await apiRequest('/api/v1/table-entities', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Laua loomine ebaõnnestus');
+  }
+  return res.json();
+}
+
+/** Update table. Body: same as create + id. */
+export async function updateTable(id, body) {
+  const res = await apiRequest(`/api/v1/table-entities/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Laua uuendamine ebaõnnestus');
+  }
+  return res.json();
+}
+
+/** Delete table. */
+export async function deleteTable(id) {
+  const res = await apiRequest(`/api/v1/table-entities/${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Laua kustutamine ebaõnnestus');
 }
 
 /**

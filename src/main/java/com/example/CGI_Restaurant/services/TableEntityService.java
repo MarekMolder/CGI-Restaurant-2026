@@ -1,5 +1,6 @@
 package com.example.CGI_Restaurant.services;
 
+import com.example.CGI_Restaurant.domain.dtos.listResponses.ListTableEntityResponseDto;
 import com.example.CGI_Restaurant.domain.dtos.listResponses.TableAvailabilityItemDto;
 import com.example.CGI_Restaurant.domain.entities.TableEntity;
 import com.example.CGI_Restaurant.domain.createRequests.CreateTableEntityRequest;
@@ -22,8 +23,14 @@ public interface TableEntityService {
     TableEntity create(CreateTableEntityRequest request);
     Page<TableEntity> list(Pageable pageable);
 
+    /** Lists all tables as DTOs (with zone and features loaded). */
+    Page<ListTableEntityResponseDto> listDtos(Pageable pageable);
+
     /** Lists active table entities in a zone (for floor plan editor). */
     List<TableEntity> listByZone(UUID zoneId);
+
+    /** Lists active tables in a zone as DTOs (with zone and features loaded). */
+    List<ListTableEntityResponseDto> listByZoneDtos(UUID zoneId);
 
     Optional<TableEntity> getById(UUID id);
 

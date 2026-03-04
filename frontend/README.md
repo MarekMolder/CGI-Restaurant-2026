@@ -10,13 +10,6 @@ React + Vite + Tailwind. Logimine ja registreerimine JWT-ga; token hoitakse `loc
 
 Vite proxy suunab `/api` päringud backendile (localhost:8080), seega CORS pole vaja.
 
-## Struktuur
-
-- `src/api/` – API klient (JWT localStorage + `apiRequest`), auth (login, register)
-- `src/components/` – Button, Input, Card
-- `src/context/AuthContext.jsx` – token ja `loginSuccess`/`logout`
-- `src/pages/` – Login, Register
-
 ## Build
 
 `npm run build` — väljund `dist/`.

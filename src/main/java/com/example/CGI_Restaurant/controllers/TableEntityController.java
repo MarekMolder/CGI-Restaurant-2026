@@ -56,16 +56,13 @@ public class TableEntityController {
             Pageable pageable) {
 
         if (zoneId != null) {
-            List<TableEntity> tables = tableEntityService.listByZone(zoneId);
-            return ResponseEntity.ok(tables.stream().map(tableEntityMapper::toListTableEntityResponseDto).toList());
+            return ResponseEntity.ok(tableEntityService.listByZoneDtos(zoneId));
         }
-        Page<TableEntity> tableEntities;
         if (q != null && !q.trim().isEmpty()) {
-            tableEntities = tableEntityService.searchAvailableTables(q, pageable);
-        } else {
-            tableEntities = tableEntityService.list(pageable);
+            Page<TableEntity> tableEntities = tableEntityService.searchAvailableTables(q, pageable);
+            return ResponseEntity.ok(tableEntities.map(tableEntityMapper::toListTableEntityResponseDto));
         }
-        return ResponseEntity.ok(tableEntities.map(tableEntityMapper::toListTableEntityResponseDto));
+        return ResponseEntity.ok(tableEntityService.listDtos(pageable));
     }
 
     /** Returns a single table entity by ID, or 404. */

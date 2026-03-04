@@ -1,5 +1,6 @@
 package com.example.CGI_Restaurant.services.impl;
 
+import com.example.CGI_Restaurant.domain.dtos.listResponses.ListTableEntityResponseDto;
 import com.example.CGI_Restaurant.domain.dtos.listResponses.TableAvailabilityItemDto;
 import com.example.CGI_Restaurant.domain.entities.TableEntity;
 import com.example.CGI_Restaurant.domain.createRequests.CreateTableEntityRequest;
@@ -8,12 +9,17 @@ import com.example.CGI_Restaurant.exceptions.RestaurantBookingException;
 import com.example.CGI_Restaurant.exceptions.notFoundExceptions.TableEntityNotFoundException;
 import com.example.CGI_Restaurant.exceptions.updateException.TableEntityUpdateException;
 import com.example.CGI_Restaurant.mappers.TableEntityMapper;
+import com.example.CGI_Restaurant.domain.entities.Feature;
+import com.example.CGI_Restaurant.domain.entities.Zone;
 import com.example.CGI_Restaurant.repositories.BookingTableRepository;
+import com.example.CGI_Restaurant.repositories.FeatureRepository;
 import com.example.CGI_Restaurant.repositories.TableEntityRepository;
+import com.example.CGI_Restaurant.repositories.ZoneRepository;
 import com.example.CGI_Restaurant.services.RestaurantHoursService;
 import com.example.CGI_Restaurant.services.TableEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +35,7 @@ import java.util.Deque;
  * Implementation of table entity operations. Filters available tables by capacity, min party size,
  * and max empty seats; supports combined (adjacent) table options and feature-based scoring.
  * Validates that a set of table IDs form a connected adjacent graph for booking.
+ * AI assisted
  */
 @Service
 @RequiredArgsConstructor
@@ -40,13 +47,19 @@ public class TableEntityServiceImpl implements TableEntityService {
 
     private final TableEntityRepository tableEntityRepository;
     private final BookingTableRepository bookingTableRepository;
+    private final ZoneRepository zoneRepository;
+    private final FeatureRepository featureRepository;
     private final TableEntityMapper tableEntityMapper;
     private final RestaurantHoursService restaurantHoursService;
 
     @Override
     @Transactional
     public TableEntity create(CreateTableEntityRequest request) {
+        Zone zone = zoneRepository.findById(request.getZoneId())
+                .orElseThrow(() -> new TableEntityNotFoundException("Zone with ID '%s' not found".formatted(request.getZoneId())));
         TableEntity entity = new TableEntity();
+        entity.setZone(zone);
+        entity.setSeatingPlan(zone.getSeatingPlan());
         entity.setLabel(request.getLabel());
         entity.setCapacity(request.getCapacity());
         entity.setMinPartySize(request.getMinPartySize());
@@ -57,6 +70,7 @@ public class TableEntityServiceImpl implements TableEntityService {
         entity.setHeight(request.getHeight());
         entity.setRotationDegree(request.getRotationDegree());
         entity.setActive(request.isActive());
+        setFeaturesFromIds(entity, request.getFeatureIds() != null ? request.getFeatureIds() : List.of());
         TableEntity saved = tableEntityRepository.save(entity);
         syncAdjacentTables(saved, request.getAdjacentTableIds() != null ? request.getAdjacentTableIds() : List.of());
         return saved;
@@ -69,8 +83,35 @@ public class TableEntityServiceImpl implements TableEntityService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<ListTableEntityResponseDto> listDtos(Pageable pageable) {
+        Page<TableEntity> page = tableEntityRepository.findAll(pageable);
+        List<TableEntity> content = page.getContent();
+        content.forEach(e -> {
+            if (e.getZone() != null) e.getZone().getId();
+            if (e.getFeatures() != null) e.getFeatures().size();
+        });
+        List<ListTableEntityResponseDto> dtos = content.stream()
+                .map(tableEntityMapper::toListTableEntityResponseDto)
+                .toList();
+        return new PageImpl<>(dtos, pageable, page.getTotalElements());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<TableEntity> listByZone(UUID zoneId) {
         return zoneId == null ? List.of() : tableEntityRepository.findByZoneIdAndActiveTrueWithAdjacent(zoneId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ListTableEntityResponseDto> listByZoneDtos(UUID zoneId) {
+        if (zoneId == null) return List.of();
+        List<TableEntity> content = tableEntityRepository.findByZoneIdAndActiveTrueWithAdjacent(zoneId);
+        content.forEach(e -> {
+            if (e.getZone() != null) e.getZone().getId();
+            if (e.getFeatures() != null) e.getFeatures().size();
+        });
+        return content.stream().map(tableEntityMapper::toListTableEntityResponseDto).toList();
     }
 
     @Override
@@ -97,8 +138,14 @@ public class TableEntityServiceImpl implements TableEntityService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<TableEntity> getById(UUID id) {
-        return tableEntityRepository.findById(id);
+        return tableEntityRepository.findById(id)
+                .map(entity -> {
+                    if (entity.getZone() != null) entity.getZone().getId();
+                    if (entity.getFeatures() != null) entity.getFeatures().size();
+                    return entity;
+                });
     }
 
     @Override
@@ -119,8 +166,28 @@ public class TableEntityServiceImpl implements TableEntityService {
         entity.setHeight(request.getHeight());
         entity.setRotationDegree(request.getRotationDegree());
         entity.setActive(request.isActive());
+        if (request.getZoneId() != null) {
+            Zone zone = zoneRepository.findById(request.getZoneId())
+                    .orElseThrow(() -> new TableEntityNotFoundException("Zone with ID '%s' not found".formatted(request.getZoneId())));
+            entity.setZone(zone);
+            entity.setSeatingPlan(zone.getSeatingPlan());
+        }
+        if (request.getFeatureIds() != null) {
+            setFeaturesFromIds(entity, request.getFeatureIds());
+        }
         syncAdjacentTables(entity, request.getAdjacentTableIds() != null ? request.getAdjacentTableIds() : List.of());
         return tableEntityRepository.save(entity);
+    }
+
+    private void setFeaturesFromIds(TableEntity entity, List<UUID> featureIds) {
+        if (entity.getFeatures() == null) {
+            entity.setFeatures(new HashSet<>());
+        }
+        entity.getFeatures().clear();
+        if (featureIds != null && !featureIds.isEmpty()) {
+            Set<Feature> features = new HashSet<>(featureRepository.findAllById(featureIds));
+            entity.getFeatures().addAll(features);
+        }
     }
 
     private void syncAdjacentTables(TableEntity table, List<UUID> adjacentIds) {

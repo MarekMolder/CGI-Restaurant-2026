@@ -340,14 +340,14 @@ class BookingServiceImplTest {
             UUID id = UUID.randomUUID();
             UUID customerId = UUID.randomUUID();
             Booking b = Booking.builder().id(id).build();
-            when(bookingRepository.findByIdAndUserId(id, customerId)).thenReturn(Optional.of(b));
+            when(bookingRepository.findByIdAndUserIdWithQrCodes(id, customerId)).thenReturn(Optional.of(b));
             assertTrue(service.getBookingForCustomer(id, customerId).isPresent());
         }
 
         @Test
         @DisplayName("returns empty when not found")
         void returnsEmptyWhenNotFound() {
-            when(bookingRepository.findByIdAndUserId(any(UUID.class), any(UUID.class))).thenReturn(Optional.empty());
+            when(bookingRepository.findByIdAndUserIdWithQrCodes(any(UUID.class), any(UUID.class))).thenReturn(Optional.empty());
             assertTrue(service.getBookingForCustomer(UUID.randomUUID(), UUID.randomUUID()).isEmpty());
         }
     }
@@ -361,7 +361,7 @@ class BookingServiceImplTest {
         void returnsPresentWhenFound() {
             UUID id = UUID.randomUUID();
             Booking b = Booking.builder().id(id).build();
-            when(bookingRepository.findById(id)).thenReturn(Optional.of(b));
+            when(bookingRepository.findByIdWithQrCodes(id)).thenReturn(Optional.of(b));
             assertTrue(service.getBooking(id).isPresent());
             assertEquals(id, service.getBooking(id).get().getId());
         }
@@ -369,7 +369,7 @@ class BookingServiceImplTest {
         @Test
         @DisplayName("returns empty when not found")
         void returnsEmptyWhenNotFound() {
-            when(bookingRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+            when(bookingRepository.findByIdWithQrCodes(any(UUID.class))).thenReturn(Optional.empty());
             assertTrue(service.getBooking(UUID.randomUUID()).isEmpty());
         }
     }

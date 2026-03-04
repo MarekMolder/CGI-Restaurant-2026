@@ -77,10 +77,10 @@ class SecurityConfigTest {
     class AdminOnlyEndpoints {
 
         @Test
-        @DisplayName("GET /api/v1/features returns 403 without token (features require ADMIN)")
-        void getFeaturesForbiddenWithoutToken() throws Exception {
+        @DisplayName("GET /api/v1/features returns 200 without token (GET is public)")
+        void getFeaturesAllowedWithoutToken() throws Exception {
             mockMvc.perform(get("/api/v1/features"))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isOk());
         }
 
         @Test
