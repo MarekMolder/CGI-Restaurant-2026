@@ -27,6 +27,8 @@ public class GetTableEntityDetailsResponseDto {
     private double height;
     private int rotationDegree;
     private boolean active;
+    private UUID zoneId;
+    private List<UUID> featureIds = new ArrayList<>();
     private List<GetBookingTableDetailsResponseDto> bookingTables = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

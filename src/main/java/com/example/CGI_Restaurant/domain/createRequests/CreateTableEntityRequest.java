@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/** Request to create a table entity: label, capacity, shape, position and optional adjacent table IDs. */
+/** Request to create a table entity: label, capacity, shape, position, zone, features and optional adjacent table IDs. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateTableEntityRequest {
 
+    private UUID zoneId;
     private String label;
     private int capacity;
     private int minPartySize;
@@ -25,5 +26,6 @@ public class CreateTableEntityRequest {
     private double height;
     private int rotationDegree;
     private boolean active;
+    private List<UUID> featureIds = new ArrayList<>();
     private List<UUID> adjacentTableIds = new ArrayList<>();
 }

@@ -9,6 +9,7 @@ import Booking from './pages/Booking';
 import Info from './pages/Info';
 import MyBookings from './pages/MyBookings';
 import TableDrag from './pages/TableDrag';
+import AdminSettings from './pages/AdminSettings';
 
 function ProtectedRoute({ children }) {
   const { token } = useAuth();
@@ -28,6 +29,7 @@ function App() {
       <Route path="/info" element={<ProtectedRoute><Info /></ProtectedRoute>} />
       <Route path="/my-bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
       <Route path="/admin/table-drag" element={<ProtectedRoute><TableDrag /></ProtectedRoute>} />
+      <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

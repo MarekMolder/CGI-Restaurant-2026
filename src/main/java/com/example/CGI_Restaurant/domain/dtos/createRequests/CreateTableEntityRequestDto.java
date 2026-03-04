@@ -55,5 +55,10 @@ public class CreateTableEntityRequestDto {
 
     private boolean active;
 
+    @NotNull(message = "Zone is required")
+    private UUID zoneId;
+
+    private List<UUID> featureIds = new ArrayList<>();
+
     private List<UUID> adjacentTableIds = new ArrayList<>();
 }

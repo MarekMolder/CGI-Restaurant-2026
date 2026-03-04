@@ -8,12 +8,15 @@ export default function Home() {
   const actions = [
     { to: '/menu', label: 'Menüü', sub: 'Praed ja joogid', icon: '◆' },
     { to: '/booking', label: 'Broneeri laud', sub: 'Vali aeg ja koht', icon: '◇' },
-    { to: '/my-bookings', label: 'Minu broneeringud', sub: 'Broneeringu info ja QR-kood', icon: '▤' },
+    { to: '/my-bookings', label: 'Broneeringud', sub: 'Broneeringu info ja QR-kood', icon: '▤' },
     { to: '/info', label: 'Restorani info', sub: 'Aadress ja kontakt', icon: '◈' },
   ];
 
   const adminActions = isAdmin
-    ? [{ to: '/admin/table-drag', label: 'Laudade asukohad', sub: 'Floor plan', icon: '▣' }]
+    ? [
+        { to: '/admin/table-drag', label: 'Laudade asukohad', sub: 'Floor plan', icon: '▣' },
+        { to: '/admin/settings', label: 'Seaded', sub: 'Laudade haldus', icon: '⚙' },
+      ]
     : [];
 
   return (
@@ -74,27 +77,20 @@ export default function Home() {
                 <span className="text-stone-500 text-xs mt-0.5">{sub}</span>
               </Link>
             ))}
+            {adminActions.map(({ to, label, sub, icon }) => (
+              <Link
+                key={to}
+                to={to}
+                className="group flex flex-col items-center text-center p-4 sm:p-5 rounded-2xl border border-restaurant-gold/30 bg-restaurant-card/80 hover:bg-restaurant-gold/10 hover:border-restaurant-gold/40 transition duration-200"
+              >
+                <span className="text-restaurant-gold text-2xl sm:text-3xl mb-2 opacity-90 group-hover:opacity-100 group-hover:scale-110 transition">
+                  {icon}
+                </span>
+                <span className="font-medium text-stone-200 text-sm sm:text-base">{label}</span>
+                <span className="text-stone-500 text-xs mt-0.5">{sub}</span>
+              </Link>
+            ))}
           </div>
-          {adminActions.length > 0 && (
-            <div className="mt-4 pt-4 border-t border-restaurant-border/60">
-              <p className="text-stone-500 text-center text-xs mb-3">Administraator</p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
-                {adminActions.map(({ to, label, sub, icon }) => (
-                  <Link
-                    key={to}
-                    to={to}
-                    className="group flex flex-col items-center text-center p-4 sm:p-5 rounded-2xl border border-restaurant-gold/30 bg-restaurant-card/80 hover:bg-restaurant-gold/10 hover:border-restaurant-gold/40 transition duration-200"
-                  >
-                    <span className="text-restaurant-gold text-2xl sm:text-3xl mb-2 opacity-90 group-hover:opacity-100 group-hover:scale-110 transition">
-                      {icon}
-                    </span>
-                    <span className="font-medium text-stone-200 text-sm sm:text-base">{label}</span>
-                    <span className="text-stone-500 text-xs mt-0.5">{sub}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
 
           <p className="text-stone-500 text-center text-xs mt-5 max-w-md mx-auto">
             Broneeri laud, vaata menüüd või leia meie aadress ja kontaktandmed.

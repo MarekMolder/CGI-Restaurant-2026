@@ -25,5 +25,7 @@ public class ListTableEntityResponseDto {
     private double height;
     private int rotationDegree;
     private boolean active;
+    private UUID zoneId;
+    private List<UUID> featureIds = new ArrayList<>();
     private List<ListBookingTableResponseDto> bookingTables = new ArrayList<>();
 }

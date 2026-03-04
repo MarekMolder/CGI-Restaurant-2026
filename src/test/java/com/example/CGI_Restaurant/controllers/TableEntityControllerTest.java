@@ -61,6 +61,7 @@ class TableEntityControllerTest {
         @DisplayName("returns 201")
         void returns201() throws Exception {
             var dto = new com.example.CGI_Restaurant.domain.dtos.createRequests.CreateTableEntityRequestDto();
+            dto.setZoneId(UUID.randomUUID());
             dto.setLabel("Laud 1");
             dto.setCapacity(4);
             dto.setMinPartySize(2);

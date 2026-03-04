@@ -16,6 +16,7 @@ import com.example.CGI_Restaurant.exceptions.notFoundExceptions.TableEntityNotFo
 import com.example.CGI_Restaurant.exceptions.updateException.TableEntityUpdateException;
 import com.example.CGI_Restaurant.mappers.TableEntityMapper;
 import com.example.CGI_Restaurant.repositories.BookingTableRepository;
+import com.example.CGI_Restaurant.repositories.FeatureRepository;
 import com.example.CGI_Restaurant.repositories.TableEntityRepository;
 import com.example.CGI_Restaurant.repositories.ZoneRepository;
 import com.example.CGI_Restaurant.services.RestaurantHoursService;
@@ -52,6 +53,9 @@ class TableEntityServiceImplTest {
     private ZoneRepository zoneRepository;
 
     @Mock
+    private FeatureRepository featureRepository;
+
+    @Mock
     private TableEntityMapper tableEntityMapper;
 
     @Mock
@@ -67,7 +71,12 @@ class TableEntityServiceImplTest {
         @Test
         @DisplayName("saves new table with request data and no adjacent")
         void createsTableWithNoAdjacent() {
+            UUID zoneId = UUID.randomUUID();
+            Zone zone = Zone.builder().id(zoneId).name("Z").type(ZoneTypeEnum.INDOOR).color("#000").seatingPlan(null).build();
+            when(zoneRepository.findById(zoneId)).thenReturn(Optional.of(zone));
+
             CreateTableEntityRequest request = new CreateTableEntityRequest();
+            request.setZoneId(zoneId);
             request.setLabel("Laud 1");
             request.setCapacity(4);
             request.setMinPartySize(2);
@@ -97,9 +106,14 @@ class TableEntityServiceImplTest {
         @Test
         @DisplayName("saves and syncs adjacent tables when adjacent ids provided")
         void createsAndSyncsAdjacent() {
+            UUID zoneId = UUID.randomUUID();
+            Zone zone = Zone.builder().id(zoneId).name("Z").type(ZoneTypeEnum.INDOOR).color("#000").seatingPlan(null).build();
+            when(zoneRepository.findById(zoneId)).thenReturn(Optional.of(zone));
+
             UUID id1 = UUID.randomUUID();
             UUID id2 = UUID.randomUUID();
             CreateTableEntityRequest request = new CreateTableEntityRequest();
+            request.setZoneId(zoneId);
             request.setLabel("Laud A");
             request.setCapacity(4);
             request.setMinPartySize(1);
@@ -193,7 +207,7 @@ class TableEntityServiceImplTest {
             request.setActive(true);
             request.setAdjacentTableIds(List.of());
 
-            TableEntity existing = TableEntity.builder().id(id).label("Laud 1").capacity(4).adjacentTables(new HashSet<>()).build();
+            TableEntity existing = TableEntity.builder().id(id).label("Laud 1").capacity(4).adjacentTables(new HashSet<>()).features(new HashSet<>()).build();
             when(tableEntityRepository.findById(id)).thenReturn(Optional.of(existing));
             when(tableEntityRepository.save(any(TableEntity.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -550,7 +564,12 @@ class TableEntityServiceImplTest {
         @Test
         @DisplayName("null adjacentTableIds treated as empty")
         void nullAdjacentIdsAsEmpty() {
+            UUID zoneId = UUID.randomUUID();
+            Zone zone = Zone.builder().id(zoneId).name("Z").type(ZoneTypeEnum.INDOOR).color("#000").seatingPlan(null).build();
+            when(zoneRepository.findById(zoneId)).thenReturn(Optional.of(zone));
+
             CreateTableEntityRequest request = new CreateTableEntityRequest();
+            request.setZoneId(zoneId);
             request.setLabel("Laud");
             request.setCapacity(2);
             request.setMinPartySize(1);
@@ -581,7 +600,7 @@ class TableEntityServiceImplTest {
             UUID id = UUID.randomUUID();
             UUID otherId = UUID.randomUUID();
             TableEntity other = TableEntity.builder().id(otherId).adjacentTables(new HashSet<>()).build();
-            TableEntity existing = TableEntity.builder().id(id).label("T").capacity(2).minPartySize(1).shape(TableShapeEnum.RECT).x(0).y(0).width(60).height(80).rotationDegree(0).active(true).adjacentTables(new HashSet<>()).build();
+            TableEntity existing = TableEntity.builder().id(id).label("T").capacity(2).minPartySize(1).shape(TableShapeEnum.RECT).x(0).y(0).width(60).height(80).rotationDegree(0).active(true).adjacentTables(new HashSet<>()).features(new HashSet<>()).build();
             existing.getAdjacentTables().add(other);
             other.getAdjacentTables().add(existing);
 
