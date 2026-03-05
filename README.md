@@ -15,6 +15,7 @@ Broneerimis süsteem restoranile: klient saab broneerida laudu, vaadata menüüd
 1. **Andmebaas:** `docker compose up -d`
 2. **Backend:** `./mvnw spring-boot:run` (vaikimisi andmed seeditakse automaatselt)
 3. **Frontend:** `cd frontend && npm install && npm run dev` → http://localhost:5173
+4. Admin kasutaja: email- admin@test.com & parool- password
 
 Broneeringute kinnitusmeilide saatmiseks (Gmail) on vaja **local** profiili ja meili seadeid – vt [Setup](docs/SETUP-EST.md).
 
@@ -34,3 +35,17 @@ Broneeringute kinnitusmeilide saatmiseks (Gmail) on vaja **local** profiili ja m
 
 - Backend: `src/main/java` – iga klass kommenteeritud
 - Frontend: `frontend/` – React, Vite, Tailwind; lühike kirjeldus on [frontend/README.md](frontend/README.md)
+
+## Videos
+
+- Vajuta pildile, mis viib sind youtube lingile.
+
+
+### Setup Video
+[![Setup](https://img.youtube.com/vi/vVNMMTfCWwI/0.jpg)](https://www.youtube.com/watch?v=vVNMMTfCWwI)
+
+### Customer demo Video
+[![Demo](https://img.youtube.com/vi/7U1KOKgKyQQ/0.jpg)](https://youtu.be/7U1KOKgKyQQ)
+
+### Admin demo Video
+[![Watch](https://img.youtube.com/vi/8wIhuAsWCGk/0.jpg)](https://youtu.be/8wIhuAsWCGk)

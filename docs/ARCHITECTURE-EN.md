@@ -4,6 +4,10 @@
 
 Short overview of the domain model (entities and their purpose) and key service logic (including the recommendation system, booking creation, and adjacent tables).
 
+## Admin
+- email- admin@test.com
+- password- password
+- 
 ---
 
 ## 1. Domain entities

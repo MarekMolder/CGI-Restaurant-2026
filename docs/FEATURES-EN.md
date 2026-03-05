@@ -4,6 +4,10 @@
 
 Overview of application features.
 
+## Admin
+- email- admin@test.com
+- password- password
+
 ## Authentication
 
 - **Registration** – create a new account (email, password).

@@ -4,6 +4,11 @@
 
 Selle dokumendi järgi saad projekti kohalikult käivitada
 
+## Setup Video
+- Vajuta pildile ning seejärel avaneb youtube link.
+
+[![Setup Video](https://img.youtube.com/vi/vVNMMTfCWwI/0.jpg)](https://www.youtube.com/watch?v=vVNMMTfCWwI)
+
 ## Eeldused
 
 - **Java 17+** (backend)
@@ -101,5 +106,6 @@ lisaks vaadata testide kattuvust.
 2. Loo `src/main/resources/application-local.properties` meili andmetega (vt ülal).
 3. `./mvnw spring-boot:run -Dspring-boot.run.profiles=local`
 4. `cd frontend && npm install && npm run dev`
+5. Admin kasutaja: email- admin@test.com & parool- password
 
 Pärast seda on saadaval broneering, menüü, broneeringute kinnitusmeilid ja admin funktsioonid (kui logid sisse demo adminiga).

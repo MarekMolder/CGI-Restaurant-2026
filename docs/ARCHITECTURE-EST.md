@@ -4,6 +4,10 @@
 
 Lühike ülevaade domeeni mudelist (entity’d ja nende eesmärk) ning olulistest teenuste loogikatest (sh soovitussüsteem, broneeringu loomine, naaberlauad).
 
+## Admin
+- email- admin@test.com
+- parool- password
+
 ---
 
 ## 1. Domeeni entiteedid

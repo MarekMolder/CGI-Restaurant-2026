@@ -4,6 +4,11 @@
 
 This document describes how to run the project locally.
 
+## Setup Video
+- Click on the picture and then opens youtube link.
+
+[![Setup Video](https://img.youtube.com/vi/vVNMMTfCWwI/0.jpg)](https://www.youtube.com/watch?v=vVNMMTfCWwI)
+
 ## Prerequisites
 
 - **Java 17+** (backend)
@@ -98,5 +103,6 @@ These commands run all project tests and let you view test coverage.
 2. Create `src/main/resources/application-local.properties` with mail settings (see above).
 3. `./mvnw spring-boot:run -Dspring-boot.run.profiles=local`
 4. `cd frontend && npm install && npm run dev`
+5. Admin user: email- admin@test.com & password- password
 
 After that, booking, menu, confirmation emails and admin features are available (log in with the demo admin account).

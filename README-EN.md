@@ -15,6 +15,7 @@ Restaurant booking system: customers can book tables, view the menu and their bo
 1. **Database:** `docker compose up -d`
 2. **Backend:** `./mvnw spring-boot:run` (data is seeded by default)
 3. **Frontend:** `cd frontend && npm install && npm run dev` → http://localhost:5173
+4. Admin kasutaja: email- admin@test.com & parool- password
 
 For booking confirmation emails (Gmail), the **local** profile and mail settings are required – see [Setup](docs/SETUP-EST.md).
 
@@ -39,3 +40,17 @@ For booking confirmation emails (Gmail), the **local** profile and mail settings
 
 - Backend: `src/main/java` – every class is commented
 - Frontend: `frontend/` – React, Vite, Tailwind; short description in [frontend/README.md](frontend/README.md)
+
+## Videos
+
+- Click on the picture to open youtube link.
+
+
+### Setup Video
+[![Setup](https://img.youtube.com/vi/vVNMMTfCWwI/0.jpg)](https://www.youtube.com/watch?v=vVNMMTfCWwI)
+
+### Customer demo Video
+[![Demo](https://img.youtube.com/vi/7U1KOKgKyQQ/0.jpg)](https://youtu.be/7U1KOKgKyQQ)
+
+### Admin demo Video
+[![Watch](https://img.youtube.com/vi/8wIhuAsWCGk/0.jpg)](https://youtu.be/8wIhuAsWCGk)

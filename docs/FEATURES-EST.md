@@ -4,6 +4,10 @@
 
 Ülevaade rakenduse funktsionaalsusest.
 
+## Admin
+- email- admin@test.com
+- parool- password
+
 ## Autentimine
 
 - **Registreerimine** – uue konto loomine (e-mail, parool).
